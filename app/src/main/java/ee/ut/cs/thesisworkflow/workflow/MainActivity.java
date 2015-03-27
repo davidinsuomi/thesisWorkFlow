@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
         variablesTextView =(TextView) findViewById(R.id.variables);
         sequenceTextView =(TextView) findViewById(R.id.sequence);
         try{
-            inputStream = assetManager.open("bpel05.xml" );
+            inputStream = assetManager.open("bpel06.xml" );
             if(inputStream !=null ){
                 workFlowProcess = workFlowXmlParser.parse(inputStream);
             }

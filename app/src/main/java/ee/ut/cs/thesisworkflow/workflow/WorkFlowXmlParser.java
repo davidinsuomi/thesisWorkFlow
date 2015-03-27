@@ -21,6 +21,8 @@ import ee.ut.cs.thesisworkflow.object.WorkFlowInvoke;
 import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
 import ee.ut.cs.thesisworkflow.object.WorkFlowVariable;
 
+import static android.util.Log.*;
+
 
 public class WorkFlowXmlParser {
     private WorkFlowProcess workFlowProcess = new WorkFlowProcess();
@@ -31,6 +33,7 @@ public class WorkFlowXmlParser {
     private String previousNodeName;
     private String NodeName;
     private static final String ns = null;
+    private static final String TAG = "WorkFlowParser";
 
 
     String currentTag= null;
@@ -67,8 +70,8 @@ public class WorkFlowXmlParser {
                 readWorkFlowSequence(parser,"Beginnering", XmlPullParser.END_DOCUMENT);
                 break;
             }
-            Log.d("TAG", " partnerLink" + workFlowProcess.partnerLinks.size());
-            Log.d("TAG", " VARIABLES" + workFlowProcess.variables.size());
+            d("TAG", " partnerLink" + workFlowProcess.partnerLinks.size());
+            d("TAG", " VARIABLES" + workFlowProcess.variables.size());
 
         }
         addMissingFlowTags();
@@ -179,14 +182,6 @@ public class WorkFlowXmlParser {
                 continue;
             }
             String tagName = parser.getName();
-//			if(tagName.equals("assign")){
-//				currentTag = readAssign(parser);
-//			}else if(tagName.equals("flow")){
-//				readFlow(parser);
-//			}else if(tagName.equals("invoke")){
-//				currentTag = readInvoke(parser);
-//			}
-
             switch(tagName){
                 case "assign":
                     currentTag = readAssign(parser);
@@ -197,6 +192,10 @@ public class WorkFlowXmlParser {
                     break;
                 case "invoke":
                     currentTag = readInvoke(parser);
+                    break;
+                case "forEach":
+                    readForEach(parser,previousTag);
+                    flagSkip = true;
                     break;
                 default:
                     break;
@@ -229,6 +228,7 @@ public class WorkFlowXmlParser {
 
     private void readFlow(XmlPullParser parser,String previousTag) throws XmlPullParserException, IOException{
         final String  flowPreviousTag = previousTag;
+        Log.e(TAG,"flowPrevious Tag" + flowPreviousTag );
         parser.require(XmlPullParser.START_TAG, ns, "flow");
         ArrayList<String> flowTags = new ArrayList<String>();
         while(parser.next() != XmlPullParser.END_TAG){
@@ -237,13 +237,62 @@ public class WorkFlowXmlParser {
                 continue;
             }
             if(tag.equals("sequence")){
-                flowTags.add(readWorkFlowSequence(parser, flowPreviousTag ,XmlPullParser.END_TAG));
+                String addTag = readWorkFlowSequence(parser, flowPreviousTag ,XmlPullParser.END_TAG);
+                Log.e(TAG,"flowTag add " + addTag + "flowPreviousTag " + flowPreviousTag);
+                flowTags.add(addTag);
             }
         }
         String tag = flowTags.remove(flowTags.size() -1 );
         flowlastTags.put(tag, flowTags);
+        Log.e(TAG,"remove tag " + tag );
+        for(String string : flowTags){
+              Log.e(TAG,"flowLastTag add " + string );
+        }
         //parser.nextTag();
     }
+
+    private void readForEach(XmlPullParser parser, String previousTag) throws XmlPullParserException,IOException{
+         final String flowPreviousTag = previousTag;
+         parser.require(XmlPullParser.START_TAG,ns,"forEach");
+         ArrayList<String> tags = new ArrayList<String>();
+         int startCount=0;
+         int finalCount=0;
+        while(parser.next() != XmlPullParser.END_TAG){
+            String tag = parser.getName();
+            if(parser.getEventType() != XmlPullParser.START_TAG){
+                continue;
+            }
+            if(tag.equals("startCounterValue")){
+                parser.require(XmlPullParser.START_TAG,ns,"startCounterValue");
+                if(parser.next() == XmlPullParser.TEXT){
+                    startCount = Integer.parseInt(parser.getText());
+                }
+                parser.next();
+            }else if(tag.equals("finalCounterValue")){
+                parser.require(XmlPullParser.START_TAG,ns,"finalCounterValue");
+                if(parser.next() == XmlPullParser.TEXT){
+                    finalCount = Integer.parseInt(parser.getText());
+                }
+                parser.next();
+
+            }else if(tag.equals("sequence")){
+               for(int i = startCount ; i< finalCount ; i ++){
+                   String addTag = readWorkFlowSequence(parser, flowPreviousTag ,XmlPullParser.END_TAG);
+                   Log.e(TAG,"flowTag add " + addTag + "flowPreviousTag " + flowPreviousTag);
+                   tags.add(addTag);
+               }
+            }
+        }
+
+        String tag = tags.remove(tags.size() -1 );
+        flowlastTags.put(tag, tags);
+        Log.e(TAG,"remove tag " + tag );
+        for(String string : tags){
+            Log.e(TAG,"flowLastTag add " + string );
+        }
+    }
+
+
     private String readInvoke(XmlPullParser parser)throws XmlPullParserException, IOException{
         parser.require(XmlPullParser.START_TAG, ns, "invoke");
         String name = null;
