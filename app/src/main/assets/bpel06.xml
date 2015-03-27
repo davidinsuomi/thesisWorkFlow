@@ -55,7 +55,7 @@
             outputVariable="scanCoapResultUsingBLE"/>
         <forEach countername='n'>
             <startCounterValue>0</startCounterValue>
-            <finalCounterValue>2</finalCounterValue>
+            <finalCounterValue>4</finalCounterValue>
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"

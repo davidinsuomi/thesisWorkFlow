@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import ee.ut.cs.thesisworkflow.object.ForeachRepeatTask;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowAssign;
@@ -30,6 +31,7 @@ public class WorkFlowXmlParser {
     private Map<String,ArrayList<String>> graphMapBackword = new HashMap<String,ArrayList<String>>();
     private Map<String,WorkFlowActivity> activityMap = new HashMap<String,WorkFlowActivity>();
     private Map<String,ArrayList<String>> flowlastTags = new HashMap<String,ArrayList<String>>();
+    private ArrayList<ForeachRepeatTask> repeatTasks = new ArrayList<ForeachRepeatTask>();
     private String previousNodeName;
     private String NodeName;
     private static final String ns = null;
@@ -77,6 +79,7 @@ public class WorkFlowXmlParser {
         addMissingFlowTags();
         addMissingEndFlag();
         parsingGraphMapBackword();
+        addRepestTask();
         workFlowProcess.activityMap = activityMap;
         workFlowProcess.graphMap = graphMap;
         workFlowProcess.graphMapBackword = graphMapBackword;
@@ -84,10 +87,18 @@ public class WorkFlowXmlParser {
 
 
     }
+
+
+    private void addRepestTask(){
+        for(ForeachRepeatTask task : repeatTasks){
+            createForEachParalleTask(task);
+        }
+    }
     private  void addMissingEndFlag(){
         graphMap.put(currentTag, new ArrayList<String>(Arrays.asList("ending")));
         System.out.println();
     }
+
     private void parsingGraphMapBackword(){
         for(Map.Entry<String, ArrayList<String>> entry: graphMap.entrySet()){
             String key = entry.getKey();
@@ -228,7 +239,7 @@ public class WorkFlowXmlParser {
 
     private void readFlow(XmlPullParser parser,String previousTag) throws XmlPullParserException, IOException{
         final String  flowPreviousTag = previousTag;
-        Log.e(TAG,"flowPrevious Tag" + flowPreviousTag );
+        Log.e(TAG, "flowPrevious Tag" + flowPreviousTag);
         parser.require(XmlPullParser.START_TAG, ns, "flow");
         ArrayList<String> flowTags = new ArrayList<String>();
         while(parser.next() != XmlPullParser.END_TAG){
@@ -252,7 +263,7 @@ public class WorkFlowXmlParser {
     }
 
     private void readForEach(XmlPullParser parser, String previousTag) throws XmlPullParserException,IOException{
-         final String flowPreviousTag = previousTag;
+         final String foreachPreviousTag = previousTag;
          parser.require(XmlPullParser.START_TAG,ns,"forEach");
          ArrayList<String> tags = new ArrayList<String>();
          int startCount=0;
@@ -276,23 +287,75 @@ public class WorkFlowXmlParser {
                 parser.next();
 
             }else if(tag.equals("sequence")){
-               for(int i = startCount ; i< finalCount ; i ++){
-                   String addTag = readWorkFlowSequence(parser, flowPreviousTag ,XmlPullParser.END_TAG);
-                   Log.e(TAG,"flowTag add " + addTag + "flowPreviousTag " + flowPreviousTag);
-                   tags.add(addTag);
-               }
+                String endTag = readWorkFlowSequence(parser, foreachPreviousTag ,XmlPullParser.END_TAG);
+                int count = finalCount - startCount -1;
+                ForeachRepeatTask task = new ForeachRepeatTask(count,previousTag,endTag);
+                repeatTasks.add(task);
             }
         }
+    }
+    private void createForEachParalleTask(ForeachRepeatTask task){
+        int count = task.count;
+        String startTag = task.startTag;
+        String endTag = graphMap.get(task.endTag).get(0);
+        String previousTag = startTag;
+        String branchPreviousTag = startTag;
+        boolean firstRun = true;
+        for(int i=0; i < count ; i ++){
+            String currentTag = graphMap.get(previousTag).get(0);
+            while(!currentTag.equals(endTag)){
+                String newTag= "";
+                WorkFlowActivity activity = activityMap.get(currentTag);
+                if(activity instanceof WorkFlowInvoke){
+                   WorkFlowInvoke invoke = createInvokeWithID((WorkFlowInvoke) activity, i+1);
+                    activityMap.put(invoke.name,invoke);
+                    newTag = invoke.name;
 
-        String tag = tags.remove(tags.size() -1 );
-        flowlastTags.put(tag, tags);
-        Log.e(TAG,"remove tag " + tag );
-        for(String string : tags){
-            Log.e(TAG,"flowLastTag add " + string );
+                } else if (activity instanceof  WorkFlowAssign){
+                    WorkFlowAssign assign = createAssignWithID((WorkFlowAssign) activity , i+1);
+                    activityMap.put(assign.name,assign);
+                    newTag = assign.name;
+                }
+                updateGraphMap(branchPreviousTag,newTag);
+                branchPreviousTag = newTag;
+                previousTag = currentTag;
+                currentTag = graphMap.get(previousTag).get(0);
+            }
+             startTag = task.startTag;
+             endTag = graphMap.get(task.endTag).get(0);
+             previousTag = startTag;
+             branchPreviousTag = startTag;
+        }
+    }
+    private void updateGraphMap(String previousTag, String currentTag){
+        if (graphMap.containsKey(previousTag)) {
+            ArrayList<String> old = graphMap.get(previousTag);
+            old.add(currentTag);
+            ArrayList<String> newList = new ArrayList<String>(old);
+            graphMap.put(previousTag, newList);
+        } else {
+            graphMap.put(previousTag,
+                    new ArrayList<String>(Arrays.asList(currentTag)));
         }
     }
 
 
+    private WorkFlowAssign createAssignWithID(WorkFlowAssign workFlowAssign, int id){
+        String name = workFlowAssign.name + (id);
+        String from = workFlowAssign.from;
+        String to = workFlowAssign.to;
+        WorkFlowAssign assign = new WorkFlowAssign(name, from, to);
+        return assign;
+    }
+    private WorkFlowInvoke createInvokeWithID(WorkFlowInvoke workFlowInvoke, int id){
+        String name = workFlowInvoke.name + (id);
+        String partnerLink = workFlowInvoke.partnerLink;
+        String operation = workFlowInvoke.operation;
+        String inputVariable =workFlowInvoke.inputVariable;
+        String outputVariable = workFlowInvoke.outputVariable;
+        WorkFlowInvoke invoke = new WorkFlowInvoke(name, partnerLink, operation, inputVariable, outputVariable);
+        return invoke;
+    }
     private String readInvoke(XmlPullParser parser)throws XmlPullParserException, IOException{
         parser.require(XmlPullParser.START_TAG, ns, "invoke");
         String name = null;
