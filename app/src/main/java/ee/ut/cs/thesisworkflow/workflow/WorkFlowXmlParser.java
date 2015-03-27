@@ -321,11 +321,15 @@ public class WorkFlowXmlParser {
                 previousTag = currentTag;
                 currentTag = graphMap.get(previousTag).get(0);
             }
+
+            //in here every end activity in foreach node need to add following ending tag
+             updateGraphMap(branchPreviousTag,currentTag);
              startTag = task.startTag;
-             endTag = graphMap.get(task.endTag).get(0);
              previousTag = startTag;
              branchPreviousTag = startTag;
         }
+
+        Log.e(TAG,"in the end of createForEachParalleTask" + currentTag);
     }
     private void updateGraphMap(String previousTag, String currentTag){
         if (graphMap.containsKey(previousTag)) {
