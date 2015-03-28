@@ -1,5 +1,6 @@
 package ee.ut.cs.thesisworkflow.workflow;
 
+import ee.ut.cs.thesisworkflow.connection.CoapConnection;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowAssign;
@@ -144,9 +145,20 @@ public class MainActivity extends Activity {
         //===================
         System.out.println("exectuion the flow");
 //        BeginWorkFlow(workFlowProcess);
-        new offloadingToServerAsyncTask().execute();
+//        new offloadingToServerAsyncTask().execute();
+        new CoapConnectionTask().execute();
     }
+    class CoapConnectionTask  extends AsyncTask<Void,Void,Void> {
 
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //testing the coap
+            CoapConnection coapConnection = new CoapConnection("DISCOVER","coap://192.168.0.100:5683",null);
+            coapConnection.Connect();
+            return null;
+        }
+    }
 
     private void saveBpelToInternalStorage(String filename,String writer){
         FileOutputStream outputStream;
