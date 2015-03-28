@@ -154,7 +154,7 @@ public class MainActivity extends Activity {
         protected Void doInBackground(Void... params) {
 
             //testing the coap
-            CoapConnection coapConnection = new CoapConnection("DISCOVER","coap://localhost","");
+            CoapConnection coapConnection = new CoapConnection("GET","coap://localhost/coapIP","");
             coapConnection.Connect();
             return null;
         }
