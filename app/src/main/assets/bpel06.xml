@@ -14,9 +14,7 @@
     <!-- ================================================================= -->
     <partnerLinks>
         <partnerLink name="BLEScanning"
-            partnerLinkType="tns:ExecuteWorkflow">
-            http://locolhost/scaningBLEResult
-        </partnerLink>
+            partnerLinkType="tns:ExecuteWorkflow">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
             partnerLinkType="tns:GetData">scanCoapResultUsingBLE[0]</partnerLink>
         <partnerLink name="matchingCoap"

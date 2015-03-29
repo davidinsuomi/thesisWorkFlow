@@ -16,6 +16,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
+import coap.*;
+
 
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
@@ -60,15 +64,13 @@ public class WorkFlowExecution {
         private Thread t;
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             WorkFlowActivity activity = activityMap.get(activityName);
             if(activity instanceof WorkFlowInvoke){
                 WorkFlowInvoke workFlowInvoke= (WorkFlowInvoke) activity;
-                if(workFlowInvoke.operation.contains("post")){
+                if(workFlowInvoke.operation != null && workFlowInvoke.operation.contains("post")){
                     try {
                         PostToServer(workFlowInvoke);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }else{
@@ -133,40 +135,131 @@ public class WorkFlowExecution {
 //        outputVariable.value = content;
     }
 
-    private void FetchFromServer(WorkFlowInvoke workFlowInvoke) throws ClientProtocolException, IOException {
+    private void FetchFromServer(WorkFlowInvoke workFlowInvoke) throws IOException {
         String URLPATH = "";
+        String fullUri = "";
         byte[] byteFromServer;
         for (PartnerLink partnerLink : partnerLinks) {
             if (partnerLink.name.equals(workFlowInvoke.partnerLink)) {
                 URLPATH = partnerLink.URL;
             }
         }
-        String FullURL = URLPATH + "/" + workFlowInvoke.operation;
-        Log.d(TAG, "fetch from server " + FullURL);
 
+        if(URLPATH.startsWith("coap")){
+            fullUri = URLPATH;
+            Log.d(TAG, "coap uri " + fullUri  );
+            byteFromServer = fetchCoap(fullUri);
+        }
+        else {
+            fullUri = URLPATH + "/" + workFlowInvoke.operation;
+            byteFromServer = fetchHttp(fullUri);
+        }
+
+        for(WorkFlowVariable variable : variables){
+            if(variable.name.equals(workFlowInvoke.outputVariable)){
+                variable.value = byteFromServer;
+                String log = new String(byteFromServer, "UTF-8");
+                Log.d(TAG, "get TO server not null" + log);
+            }
+        }
+    }
+
+    private byte[] fetchCoap(String uri){
+        //TODO NEED TO IMPLEMENT
+        byte[] byteFromServer = null;
+        Request request = new GETRequest();
+        try {
+            request.setURI(new URI(uri));
+        } catch (URISyntaxException e) {
+            Log.e(TAG,"Failed to parse URI: " + e.getMessage());
+            return  null;
+        }
+
+        // enable response queue in order to use blocking I/O
+        request.enableResponseQueue(true);
+
+        // execute request
+        try {
+            request.execute();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to execute request: " + e.getMessage());
+            return null;
+        }
+
+
+        // receive response
+
+        Log.e(TAG,"Receiving response...");
+        Response response = null;
+        try {
+            response = request.receiveResponse();
+
+            // check for indirect response
+            if (response != null && response.isEmptyACK()) {
+                response.log();
+                Log.e(TAG,"Request acknowledged, waiting for separate response...");
+
+                response = request.receiveResponse();
+            }
+
+        } catch (InterruptedException e) {
+            Log.e(TAG,"Failed to receive response: " + e.getMessage());
+            return null;
+        }
+
+        // output response
+
+        if (response != null) {
+
+            response.log();
+            byteFromServer = response.getPayload();
+            Log.e(TAG,"Round Trip Time (ms): " + response.getRTT());
+
+            // check of response contains resources
+            if (response.hasFormat(MediaTypeRegistry.LINK_FORMAT)) {
+
+                String linkFormat = response.getPayloadString();
+
+                // create resource three from link format
+                Resource root = RemoteResource.newRoot(linkFormat);
+                if (root != null) {
+                    // output discovered resources
+                    Log.e(TAG,"\nDiscovered resources:");
+                    root.log();
+
+                } else {
+                    Log.e(TAG,"Failed to parse link format");
+                }
+            }
+
+        } else {
+            // no response received
+            // calculate time elapsed
+            long elapsed = System.currentTimeMillis() - request.getTimestamp();
+
+            Log.e(TAG,"Request timed out (ms): " + elapsed);
+        }
+
+
+        return byteFromServer;
+    }
+
+    private byte[] fetchHttp(String uri) throws  IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpResponse response = httpclient.execute(new HttpGet(URLPATH));
+        HttpResponse response = httpclient.execute(new HttpGet(uri));
         StatusLine statusLine = response.getStatusLine();
         if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             response.getEntity().writeTo(out);
             out.close();
-            byteFromServer = out.toByteArray();
+            return out.toByteArray();
             // ..more logic
         } else {
             // Closes the connection.
             response.getEntity().getContent().close();
             throw new IOException(statusLine.getReasonPhrase());
         }
-
-        for(WorkFlowVariable variable : variables){
-            if(variable.name.equals(workFlowInvoke.outputVariable)){
-                variable.value = byteFromServer;
-                Log.d(TAG, "get TO server not null" + byteFromServer.length);
-            }
-        }
     }
-
     private void AssignVariable(WorkFlowAssign assign){
         String from = ((WorkFlowAssign) assign).from;
         String to = ((WorkFlowAssign) assign).to;

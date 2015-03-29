@@ -99,9 +99,9 @@ public class MainActivity extends Activity {
 
 
 
-//        workFlowExecution.BeginWorkFlow(workFlowProcess);
+        workFlowExecution.BeginWorkFlow(workFlowProcess);
 //        new offloadingToServerAsyncTask().execute();
-        new CoapConnectionTask().execute();
+//        new CoapConnectionTask().execute();
     }
 
     // in order to enable ble call it onStart
@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
         protected Void doInBackground(Void... params) {
 
             //testing the coap
-            CoapConnection coapConnection = new CoapConnection("GET","coap://localhost/coapIP","");
+            CoapConnection coapConnection = new CoapConnection("GET","coap://localhost/coapIP",null);
             coapConnection.Connect();
             return null;
         }
