@@ -126,9 +126,9 @@ public class WorkFlowExecution {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(FullURL);
-        if (inputVariable.value != null) {
+        if (inputVariable.GetValue() != null) {
             Log.d(TAG, "POST TO server not null");
-            httpPost.setEntity(new ByteArrayEntity(inputVariable.value));
+            httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
             HttpResponse response = httpclient.execute(httpPost);
         }
 //        byte[] content = EntityUtils.toByteArray(response.getEntity());
@@ -157,7 +157,7 @@ public class WorkFlowExecution {
 
         for(WorkFlowVariable variable : variables){
             if(variable.name.equals(workFlowInvoke.outputVariable)){
-                variable.value = byteFromServer;
+                variable.SetValue(byteFromServer);
                 String log = new String(byteFromServer, "UTF-8");
                 Log.d(TAG, "get TO server not null" + log);
             }
@@ -273,8 +273,7 @@ public class WorkFlowExecution {
             }
         }
 
-        copyToVariable.value = copyFromVariable.value;
-
+        copyToVariable.SetValue(copyFromVariable.GetValue());
     }
     private boolean IsLastExecutionInGraph(String graphKey){
         ArrayList<String> graphValues = graphMap.get(graphKey);

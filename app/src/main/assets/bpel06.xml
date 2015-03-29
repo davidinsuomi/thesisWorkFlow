@@ -31,7 +31,7 @@
          Reference to the message that will be returned to the requester
          -->
         <variable name="scanCoapResultUsingBLE"
-            messageType="tns:List"/>
+            messageType="tns:StringList"/>
         <variable name="coapService"
             messageType="tns:String"/>
         <variable name="postData"
