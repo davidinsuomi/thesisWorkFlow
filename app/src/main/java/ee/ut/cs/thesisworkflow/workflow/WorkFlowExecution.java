@@ -52,7 +52,9 @@ public class WorkFlowExecution {
     private void ProcessWorkFlow(String graphKey){
         if(!IsLastExecutionInGraph(graphKey)&& IsPreviousTaskFinish(graphKey)){
             ArrayList<String> graphValues = graphMap.get(graphKey);
+
             for(int i=0; i < graphValues.size() ; i++){
+
                 //sequence task
                 ExecutionTask task = new ExecutionTask(graphValues.get(i));
                 task.start();
@@ -138,16 +140,21 @@ public class WorkFlowExecution {
     private void FetchFromServer(WorkFlowInvoke workFlowInvoke) throws IOException {
         String URLPATH = "";
         String fullUri = "";
-        byte[] byteFromServer;
+        byte[] byteFromServer = null;
         for (PartnerLink partnerLink : partnerLinks) {
             if (partnerLink.name.equals(workFlowInvoke.partnerLink)) {
                 URLPATH = partnerLink.URL;
             }
         }
-
+        // assign loop count based on the invoke name
         if(URLPATH.startsWith("coap")){
             fullUri = URLPATH;
             Log.d(TAG, "coap uri " + fullUri  );
+            byteFromServer = fetchCoap(fullUri);
+        }else if(URLPATH.startsWith("$")){
+            //TODO need to get uri convert from list
+            fullUri = GetUriPathFromList(workFlowInvoke.name,URLPATH.substring(1));
+            Log.d(TAG, "$ coap uri " + fullUri  );
             byteFromServer = fetchCoap(fullUri);
         }
         else {
@@ -161,6 +168,27 @@ public class WorkFlowExecution {
                 String log = new String(byteFromServer, "UTF-8");
                 Log.d(TAG, "get TO server not null" + log);
             }
+        }
+    }
+    private String GetUriPathFromList(String invokeName,String partnerLinkUri){
+        int loopCount = CalculateLoopCount(invokeName);
+        String uri = null;
+        for(WorkFlowVariable variable : variables){
+            if(variable.name.equals(partnerLinkUri)){
+                uri = variable.datas.get(loopCount);
+            }
+        }
+
+        return uri;
+
+    }
+    private int CalculateLoopCount(String name){
+        // if last character of name has number is means need to have position in list
+        char lastCharacter = name.charAt(name.length() -1);
+        if(lastCharacter >='0' && lastCharacter <='9'){
+            return Character.getNumericValue(lastCharacter);
+        }else{
+            return 0;
         }
     }
 

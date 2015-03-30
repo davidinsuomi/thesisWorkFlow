@@ -16,7 +16,7 @@
         <partnerLink name="BLEScanning"
             partnerLinkType="tns:ExecuteWorkflow">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
-            partnerLinkType="tns:GetData">scanCoapResultUsingBLE[0]</partnerLink>
+            partnerLinkType="tns:GetData">$scanCoapResultUsingBLE</partnerLink>
         <partnerLink name="matchingCoap"
             partnerLinkType="tns:GetData">http://locolhost/matchingCoap</partnerLink>
 
@@ -31,7 +31,7 @@
          Reference to the message that will be returned to the requester
          -->
         <variable name="scanCoapResultUsingBLE"
-            messageType="tns:StringList"/>
+            messageType="tns:List"/>
         <variable name="coapService"
             messageType="tns:String"/>
         <variable name="postData"
@@ -53,12 +53,12 @@
             outputVariable="scanCoapResultUsingBLE"/>
         <forEach countername='n'>
             <startCounterValue>0</startCounterValue>
-            <finalCounterValue>4</finalCounterValue>
+            <finalCounterValue>3</finalCounterValue>
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"
                     operation="well-known/core"
-                outputVariable="coapService"/>
+                    outputVariable="coapService"/>
                 <assign name="assign">
                     <copy>
                         <from variable="coapService" />
