@@ -17,8 +17,8 @@
             partnerLinkType="tns:ExecuteWorkflow">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
             partnerLinkType="tns:GetData">$scanCoapResultUsingBLE</partnerLink>
-        <partnerLink name="matchingCoap"
-            partnerLinkType="tns:GetData">http://locolhost/matchingCoap</partnerLink>
+        <!--<partnerLink name="matchingCoap"-->
+            <!--partnerLinkType="tns:GetData">http://localhost/matchingCoap</partnerLink>-->
 
     </partnerLinks>
 
@@ -57,7 +57,7 @@
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"
-                    operation="well-known/core"
+                    operation=".well-known/core"
                     outputVariable="coapService"/>
                 <assign name="assign">
                     <copy>

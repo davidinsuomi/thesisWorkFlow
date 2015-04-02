@@ -149,13 +149,17 @@ public class WorkFlowExecution {
         // assign loop count based on the invoke name
         if(URLPATH.startsWith("coap")){
             fullUri = URLPATH;
-            Log.d(TAG, "coap uri " + fullUri  );
+            Log.d(TAG, "coap uri " + fullUri);
             byteFromServer = fetchCoap(fullUri);
         }else if(URLPATH.startsWith("$")){
-            //TODO need to get uri convert from list
             fullUri = GetUriPathFromList(workFlowInvoke.name,URLPATH.substring(1));
-            Log.d(TAG, "$ coap uri " + fullUri  );
-            byteFromServer = fetchCoap(fullUri);
+            Log.d(TAG, "$coap uri " + fullUri  );
+            if(workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")){
+                fullUri = fullUri + workFlowInvoke.operation;
+                byteFromServer = fetchCoap(fullUri);
+            }else {
+                byteFromServer = fetchCoap(fullUri);
+            }
         }
         else {
             fullUri = URLPATH + "/" + workFlowInvoke.operation;
@@ -193,7 +197,6 @@ public class WorkFlowExecution {
     }
 
     private byte[] fetchCoap(String uri){
-        //TODO NEED TO IMPLEMENT
         byte[] byteFromServer = null;
         Request request = new GETRequest();
         try {
