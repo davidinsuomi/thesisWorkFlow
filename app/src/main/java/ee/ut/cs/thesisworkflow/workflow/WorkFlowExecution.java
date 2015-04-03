@@ -69,7 +69,7 @@ public class WorkFlowExecution {
             WorkFlowActivity activity = activityMap.get(activityName);
             if(activity instanceof WorkFlowInvoke){
                 WorkFlowInvoke workFlowInvoke= (WorkFlowInvoke) activity;
-                if(workFlowInvoke.operation != null && workFlowInvoke.operation.contains("post")){
+                if(workFlowInvoke.operation != null && workFlowInvoke.operation.contains("POST")){
                     try {
                         PostToServer(workFlowInvoke);
                     } catch (IOException e) {

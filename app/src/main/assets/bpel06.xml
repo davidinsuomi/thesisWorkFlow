@@ -36,8 +36,6 @@
             messageType="tns:String"/>
         <variable name="postData"
             messageType="tns:String"/>
-        <variable name="postDataTwo"
-            messageType="tns:String"/>
         <variable name="mathcingResult"
             messageType="tns:String"/>
     </variables>
@@ -67,16 +65,11 @@
                         <to variable="postData" />
                     </copy>
                 </assign>
-                <assign name="assignTwo">
-                    <copy>
-                        <from variable="coapServiceResponse" />
-                        <to variable="postDataTwo" />
-                    </copy>
-                </assign>
-                <!--<invoke name="invokeMatchingCoap"-->
-                    <!--partnerLink="matchingCoap"-->
-                    <!--inputVariable="postData"-->
-                    <!--outputVariable="mathcingResult"/>-->
+                <invoke name="invokeMatchingCoap"
+                    partnerLink="matchingCoap"
+                    operation="POST"
+                    inputVariable="postData"
+                    outputVariable="mathcingResult"/>
             </sequence>
         </forEach>
     </sequence>
