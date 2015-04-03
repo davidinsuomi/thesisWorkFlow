@@ -122,19 +122,25 @@ public class WorkFlowExecution {
             }
         }
 
-        String FullURL = URLPATH + "/" + workFlowInvoke.operation;
-        Log.d(TAG, "POST TO server " + FullURL);
-
-        // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(FullURL);
-        if (inputVariable.GetValue() != null) {
-            Log.d(TAG, "POST TO server not null");
-            httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
-            HttpResponse response = httpclient.execute(httpPost);
+        if(URLPATH.startsWith("coap")){
+            PostCoap(URLPATH,inputVariable.data);
         }
+        else {
+
+            String FullURL = URLPATH + "/" + workFlowInvoke.operation;
+            Log.d(TAG, "POST TO server " + FullURL);
+
+            // Create a new HttpClient and Post Header
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(FullURL);
+            if (inputVariable.GetValue() != null) {
+                Log.d(TAG, "POST TO server not null");
+                httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
+                HttpResponse response = httpclient.execute(httpPost);
+            }
 //        byte[] content = EntityUtils.toByteArray(response.getEntity());
 //        outputVariable.value = content;
+        }
     }
 
     private void FetchFromServer(WorkFlowInvoke workFlowInvoke) throws IOException {
@@ -150,15 +156,15 @@ public class WorkFlowExecution {
         if(URLPATH.startsWith("coap")){
             fullUri = URLPATH;
             Log.d(TAG, "coap uri " + fullUri);
-            byteFromServer = fetchCoap(fullUri);
+            byteFromServer = FetchCoap(fullUri);
         }else if(URLPATH.startsWith("$")){
             fullUri = GetUriPathFromList(workFlowInvoke.name,URLPATH.substring(1));
             Log.d(TAG, "$coap uri " + fullUri  );
             if(workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")){
                 fullUri = fullUri + workFlowInvoke.operation;
-                byteFromServer = fetchCoap(fullUri);
+                byteFromServer = FetchCoap(fullUri);
             }else {
-                byteFromServer = fetchCoap(fullUri);
+                byteFromServer = FetchCoap(fullUri);
             }
         }
         else {
@@ -195,17 +201,24 @@ public class WorkFlowExecution {
             return 0;
         }
     }
-
-    private byte[] fetchCoap(String uri){
-        byte[] byteFromServer = null;
+    private byte[] PostCoap(String uri, String payload){
+        Request request = new POSTRequest();
+        return  CoapConnection(request,payload,uri);
+    }
+    private byte[] FetchCoap(String uri){
         Request request = new GETRequest();
+        return  CoapConnection(request,null,uri);
+    }
+
+    private byte[] CoapConnection(Request request, String payload, String uri){
+        byte[] byteFromServer = null;
         try {
             request.setURI(new URI(uri));
         } catch (URISyntaxException e) {
             Log.e(TAG,"Failed to parse URI: " + e.getMessage());
             return  null;
         }
-
+        request.setPayload(payload);
         // enable response queue in order to use blocking I/O
         request.enableResponseQueue(true);
 
@@ -274,6 +287,7 @@ public class WorkFlowExecution {
 
         return byteFromServer;
     }
+
 
     private byte[] fetchHttp(String uri) throws  IOException{
         HttpClient httpclient = new DefaultHttpClient();

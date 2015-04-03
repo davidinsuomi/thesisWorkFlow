@@ -14,11 +14,11 @@
     <!-- ================================================================= -->
     <partnerLinks>
         <partnerLink name="BLEScanning"
-            partnerLinkType="tns:ExecuteWorkflow">coap://localhost/coapIP</partnerLink>
+            partnerLinkType="tns:GetData">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
             partnerLinkType="tns:GetData">$scanCoapResultUsingBLE</partnerLink>
         <!--<partnerLink name="matchingCoap"-->
-            <!--partnerLinkType="tns:GetData">http://localhost/matchingCoap</partnerLink>-->
+            <!--partnerLinkType="tns:GetData">coap://192.168.0.101/doMatching</partnerLink>-->
 
     </partnerLinks>
 
@@ -65,10 +65,10 @@
                         <to variable="postData" />
                     </copy>
                 </assign>
-                <invoke name="invokeMatchingCoap"
-                    partnerLink="matchingCoap"
-                    inputVariable="postData"
-                    outputVariable="mathcingResult"/>
+                <!--<invoke name="invokeMatchingCoap"-->
+                    <!--partnerLink="matchingCoap"-->
+                    <!--inputVariable="postData"-->
+                    <!--outputVariable="mathcingResult"/>-->
             </sequence>
         </forEach>
     </sequence>
