@@ -17,8 +17,8 @@
             partnerLinkType="tns:GetData">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
             partnerLinkType="tns:GetData">$scanCoapResultUsingBLE</partnerLink>
-        <!--<partnerLink name="matchingCoap"-->
-            <!--partnerLinkType="tns:GetData">coap://192.168.0.101/doMatching</partnerLink>-->
+        <partnerLink name="matchingCoap"
+            partnerLinkType="tns:GetData">coap://192.168.0.101/doMatching</partnerLink>
 
     </partnerLinks>
 
@@ -32,9 +32,11 @@
          -->
         <variable name="scanCoapResultUsingBLE"
             messageType="tns:List"/>
-        <variable name="coapService"
+        <variable name="coapServiceResponse"
             messageType="tns:String"/>
         <variable name="postData"
+            messageType="tns:String"/>
+        <variable name="postDataTwo"
             messageType="tns:String"/>
         <variable name="mathcingResult"
             messageType="tns:String"/>
@@ -53,16 +55,22 @@
             outputVariable="scanCoapResultUsingBLE"/>
         <forEach countername='n'>
             <startCounterValue>0</startCounterValue>
-            <finalCounterValue>3</finalCounterValue>
+            <finalCounterValue>1</finalCounterValue>
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"
                     operation=".well-known/core"
-                    outputVariable="coapService"/>
+                    outputVariable="coapServiceResponse"/>
                 <assign name="assign">
                     <copy>
-                        <from variable="coapService" />
+                        <from variable="coapServiceResponse" />
                         <to variable="postData" />
+                    </copy>
+                </assign>
+                <assign name="assignTwo">
+                    <copy>
+                        <from variable="coapServiceResponse" />
+                        <to variable="postDataTwo" />
                     </copy>
                 </assign>
                 <!--<invoke name="invokeMatchingCoap"-->

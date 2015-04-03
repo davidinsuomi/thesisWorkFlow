@@ -346,17 +346,39 @@ public class WorkFlowXmlParser {
 
     private WorkFlowAssign createAssignWithID(WorkFlowAssign workFlowAssign, int id){
         String name = workFlowAssign.name + (id);
-        String from = workFlowAssign.from;
-        String to = workFlowAssign.to;
+        String from = workFlowAssign.from + (id);
+        String to = workFlowAssign.to + (id);
+        CreateNewVariableBasedOnID(workFlowAssign.from,id);
+        CreateNewVariableBasedOnID(workFlowAssign.to,id);
         WorkFlowAssign assign = new WorkFlowAssign(name, from, to);
         return assign;
+    }
+
+    private void CreateNewVariableBasedOnID(String variableName, int id){
+        WorkFlowVariable newVariable = null;
+        for(WorkFlowVariable variable : workFlowProcess.variables){
+            if(variable.name.equals((variableName))){
+                newVariable =  new WorkFlowVariable(variableName+id,variable.messageType);
+            }
+        }
+        if(newVariable != null) {
+            workFlowProcess.variables.add(newVariable);
+        }
+
     }
     private WorkFlowInvoke createInvokeWithID(WorkFlowInvoke workFlowInvoke, int id){
         String name = workFlowInvoke.name + (id);
         String partnerLink = workFlowInvoke.partnerLink;
         String operation = workFlowInvoke.operation;
-        String inputVariable =workFlowInvoke.inputVariable;
-        String outputVariable = workFlowInvoke.outputVariable;
+
+        String inputVariable = null;
+        if(workFlowInvoke.inputVariable!=null) {
+            inputVariable = workFlowInvoke.inputVariable + (id);
+        }
+        String outputVariable = null;
+        if(workFlowInvoke.outputVariable !=null) {
+            outputVariable = workFlowInvoke.outputVariable + (id);
+        }
         WorkFlowInvoke invoke = new WorkFlowInvoke(name, partnerLink, operation, inputVariable, outputVariable);
         return invoke;
     }
