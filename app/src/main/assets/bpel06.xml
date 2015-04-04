@@ -18,7 +18,7 @@
         <partnerLink name="getWellKnowInCoap"
             partnerLinkType="tns:GetData">$scanCoapResultUsingBLE</partnerLink>
         <partnerLink name="matchingCoap"
-            partnerLinkType="tns:GetData">coap://192.168.0.101/doMatching</partnerLink>
+            partnerLinkType="tns:GetData">coap://192.168.0.103/temperatureMatching</partnerLink>
 
     </partnerLinks>
 
