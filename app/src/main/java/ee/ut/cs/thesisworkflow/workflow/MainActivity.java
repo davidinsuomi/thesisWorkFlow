@@ -33,9 +33,8 @@ import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
 
 public class MainActivity extends Activity {
     WorkFlowXmlParser workFlowXmlParser = new WorkFlowXmlParser();
-    TextView partnerLinksTextView, variablesTextView, sequenceTextView;
     private WorkFlowProcess workFlowProcess;
-
+    private final String TAG = "MainActivity";
 
     private ArrayList<BluetoothDevice> bluetooths = new ArrayList<BluetoothDevice>();
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -54,11 +53,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TestWorkFlowExecution();
+        TestWorkFlowGenerate();
+
+    }
+
+    private void TestWorkFlowExecution(){
         assetManager = getResources().getAssets();
         InputStream inputStream = null;
-        partnerLinksTextView = (TextView)findViewById(R.id.partnerLinks);
-        variablesTextView =(TextView) findViewById(R.id.variables);
-        sequenceTextView =(TextView) findViewById(R.id.sequence);
 
         try{
             inputStream = assetManager.open("bpel06.xml" );
@@ -71,17 +73,27 @@ public class MainActivity extends Activity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+//        workFlowExecution.BeginWorkFlow(workFlowProcess);
+
+    }
+    private void TestWorkFlowGenerate(){
         //test workflow offloading
         //===================
-        WorkFlowGenerate generate =  WorkFlowGenerate.testWorkFlowInstance();
+        WorkFlowGenerate generate =  new WorkFlowGenerate(workFlowProcess);
         try {
-            writer = generate.offLoadingTask("enterPoint", "endPoint");
+            writer = generate.offLoadingTask("findCoap", "endPoint");
         } catch (IllegalArgumentException | IllegalStateException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //read bpel.wsdl and deploy to asset folder
 
+        Log.e(TAG,writer.toString());
+
+
+    }
+
+    private void TestWorkflowUploadInApacheOde(){
         //save the dynamic bpel to internal storage
         saveBpelToInternalStorage("bpel.xml", writer.toString());
         saveBpelToInternalStorage("bpel.wsdl", bpelWsdl.toString());
@@ -98,13 +110,12 @@ public class MainActivity extends Activity {
         compress.zip();
 
 
-        new CoapConnectionTask().execute();
-        workFlowExecution.BeginWorkFlow(workFlowProcess);
-//        new offloadingToServerAsyncTask().execute();
+        new offloadingToServerAsyncTask().execute();
+
     }
 
     // in order to enable ble call it onStart
-    private void initBluetooth(){
+    private void InitBluetooth(){
         //--------Bluetooth part
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null){
