@@ -6,6 +6,8 @@
         <partnerLink partnerLinkType="tns:GetData" name="getWellKnowInCoap">$scanCoapResultUsingBLE</partnerLink>
     </partnerLinks>
     <variables>
+        <variable messageType="tns:String" name="dummyAssign1">assign1</variable>
+        <variable messageType="tns:String" name="dummyAssign2">assign2</variable>
         <variable messageType="tns:String" name="postData6" />
         <variable messageType="tns:String" name="postData1" />
         <variable messageType="tns:String" name="postData30" />
