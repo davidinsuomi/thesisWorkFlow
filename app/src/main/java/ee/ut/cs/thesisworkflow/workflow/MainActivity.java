@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -45,7 +46,6 @@ public class MainActivity extends Activity {
     long endTime;
 
     private AssetManager assetManager;
-    StringWriter writer;
     private static String SERVER_BACKEND = "http://52.10.154.189/upload.php";
 
     @Override
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         InputStream inputStream = null;
 
         try{
-            inputStream = assetManager.open("bpel06.xml" );
+            inputStream = assetManager.open("bpel07.xml" );
             if(inputStream !=null ){
                 workFlowProcess = workFlowXmlParser.parse(inputStream);
             }
@@ -74,20 +74,21 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-//        workFlowExecution.BeginWorkFlow(workFlowProcess);
+        workFlowExecution.BeginWorkFlow(workFlowProcess);
 
     }
     private void TestWorkFlowGenerate(){
         //test workflow offloading
         //===================
+        SystemClock.sleep(10000);
         WorkFlowGenerate generate =  new WorkFlowGenerate(workFlowProcess);
+        StringWriter writer = new StringWriter();
         try {
             writer = generate.offLoadingTask("findCoap", "endPoint");
         } catch (IllegalArgumentException | IllegalStateException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         Log.e(TAG,writer.toString());
 
 
@@ -95,7 +96,7 @@ public class MainActivity extends Activity {
 
     private void TestWorkflowUploadInApacheOde(){
         //save the dynamic bpel to internal storage
-        saveBpelToInternalStorage("bpel.xml", writer.toString());
+//        saveBpelToInternalStorage("bpel.xml", writer.toString());
         saveBpelToInternalStorage("bpel.wsdl", bpelWsdl.toString());
         saveBpelToInternalStorage("deploy.xml", deploy.toString());
         String[] files;

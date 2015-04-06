@@ -178,7 +178,11 @@ public class WorkFlowXmlParser {
                 parser.require(XmlPullParser.START_TAG, ns, "variable");
                 variableName = parser.getAttributeValue(ns, "name");
                 variableMessageType = parser.getAttributeValue(ns,"messageType");
-                variables.add(new WorkFlowVariable(variableName, variableMessageType));
+                WorkFlowVariable variable = new WorkFlowVariable(variableName,variableMessageType);
+                //TODO NeedTo ReadVariable
+                
+
+                variables.add(variable);
                 parser.nextTag();
                 parser.require(XmlPullParser.END_TAG, ns, "variable");
             }

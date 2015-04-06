@@ -36,8 +36,15 @@ public class WorkFlowVariable {
             }
         }
     }
+
+    public boolean HasValue(){
+        if(datas !=null || data != null)
+            return true;
+        else
+            return false;
+    }
     public boolean IsList(){
-        if(datas != null & datas.size() >0){
+        if(datas != null){
             return true;
         }
         else

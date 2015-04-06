@@ -72,7 +72,12 @@
                     outputVariable="mathcingResult"/>
             </sequence>
         </forEach>
-        <invoke name="endPoint" partnerLink="" operation="" inputVariable="" outputVariable="" />
+        <assign name="endPoint">
+            <copy>
+                <from variable="coapServiceResponse" />
+                <to variable="postData" />
+            </copy>
+        </assign>
     </sequence>
 </process>
 

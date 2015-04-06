@@ -157,7 +157,8 @@ public class WorkFlowGenerate {
         //Start Document
         xmlSerializer.startDocument("UTF-8", true);
         xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-
+        //Open Tag <file>
+        xmlSerializer.startTag("", "process");
         //TODO create partnerLinks
         xmlSerializer.startTag("", "partnerLinks");
         for(Object value : offloadingPartnerLinks.values()){
@@ -172,9 +173,6 @@ public class WorkFlowGenerate {
             CreateVariable(workFlowVariable);
         }
         xmlSerializer.endTag("", "variables");
-
-        //Open Tag <file>
-        xmlSerializer.startTag("", "process");
 
     }
     private void FinalizeXmlSerializer() throws IllegalArgumentException, IllegalStateException, IOException{
@@ -315,7 +313,24 @@ public class WorkFlowGenerate {
             xmlSerializer.attribute("", "messageType", workFlowVariable.messageType);
         }
         xmlSerializer.attribute("", "name", workFlowVariable.name);
+        CreateVariableValue(workFlowVariable);
         xmlSerializer.endTag("", "variable");
+    }
+
+    private void CreateVariableValue(WorkFlowVariable workFlowVariable) throws IOException {
+            if(workFlowVariable.HasValue()){
+                if(workFlowVariable.IsList()){
+                    String output ="";
+                    for(String data : workFlowVariable.datas){
+                        output += data +",";
+                    }
+                    //remove last comma in the string
+                    output = output.substring(0,output.length()-1);
+                    xmlSerializer.text(output);
+                }else{
+                    xmlSerializer.text(workFlowVariable.data);
+                }
+            }
     }
     private void CreatePartnerLink(PartnerLink partnerLink) throws IllegalArgumentException, IllegalStateException, IOException{
         xmlSerializer.startTag("", "partnerLink");
