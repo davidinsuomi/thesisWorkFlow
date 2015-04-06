@@ -272,14 +272,14 @@ public class WorkFlowGenerate {
                 if(nextActivities >1) {
                     String endFlowActivity= null;
                     String startActivityInsideFlow = null;
-                    xmlSerializer.startTag("", "Flow");
+                    xmlSerializer.startTag("", "flow");
                     for (int i = 0; i < nextActivities; i++) {
                         startActivityInsideFlow = graphMap.get(startTask).get(i);
                         endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
                         TaskToBeOffloading(startActivityInsideFlow, endFlowActivity);
 
                     }
-                    xmlSerializer.endTag("", "Flow");
+                    xmlSerializer.endTag("", "flow");
                     startTask = graphMap.get(endFlowActivity).get(0);
                 }
                 else {
@@ -351,10 +351,18 @@ public class WorkFlowGenerate {
     private void CreateInvoke(WorkFlowInvoke workFlowInvoke) throws IllegalArgumentException, IllegalStateException, IOException{
         xmlSerializer.startTag("", "invoke");
         xmlSerializer.attribute("", "name", workFlowInvoke.name);
-        xmlSerializer.attribute("", "partnerLink", workFlowInvoke.partnerLink);
-        xmlSerializer.attribute("", "operation", workFlowInvoke.operation);
-        xmlSerializer.attribute("", "inputVariable", workFlowInvoke.inputVariable);
-        xmlSerializer.attribute("", "outputVariable", workFlowInvoke.outputVariable);
+        if(workFlowInvoke.partnerLink !=null) {
+            xmlSerializer.attribute("", "partnerLink", workFlowInvoke.partnerLink);
+        }
+        if(workFlowInvoke.operation !=null) {
+            xmlSerializer.attribute("", "operation", workFlowInvoke.operation);
+        }
+        if(workFlowInvoke.inputVariable !=null) {
+            xmlSerializer.attribute("", "inputVariable", workFlowInvoke.inputVariable);
+        }
+        if(workFlowInvoke.outputVariable != null) {
+            xmlSerializer.attribute("", "outputVariable", workFlowInvoke.outputVariable);
+        }
         xmlSerializer.endTag("", "invoke");
     }
 }
