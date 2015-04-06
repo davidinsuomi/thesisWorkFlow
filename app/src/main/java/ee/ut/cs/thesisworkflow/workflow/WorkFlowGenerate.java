@@ -226,23 +226,18 @@ public class WorkFlowGenerate {
     //So far only to able to offloading sequenceTask
     public void TaskToBeOffloadingParallel(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException {
         xmlSerializer.startTag("", "sequence");
-        while (!startTask.equals(graphMap.get(endTask).get(0))) {
-            //TODO Need to change first task to empty
-            CreateStartingBpelActivity();
-            String endFlowActivity = null;
-            String startActivityInsideFlow = null;
-            xmlSerializer.startTag("", "flow");
-            for (int i = 0; i < subtasks; i++) {
-                startActivityInsideFlow = graphMap.get(startTask).get(i);
-                endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
-                TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
-
-            }
-            xmlSerializer.endTag("", "flow");
-            startTask = graphMap.get(endFlowActivity).get(0);
-
+        //TODO Need to change first task to empty
+        CreateStartingBpelActivity();
+        String endFlowActivity = null;
+        String startActivityInsideFlow = null;
+        xmlSerializer.startTag("", "flow");
+        for (int i = 0; i < subtasks; i++) {
+            startActivityInsideFlow = graphMap.get(startTask).get(i);
+            endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
+            TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
 
         }
+        xmlSerializer.endTag("", "flow");
         xmlSerializer.endTag("", "sequence");
     }
 
