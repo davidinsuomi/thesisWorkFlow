@@ -252,12 +252,11 @@ public class WorkFlowGenerate {
     }
     public StringWriter OffloadingTask(String startTask, String endTask) throws IOException {
             if(IsOffloadingParalleTask(startTask,endTask)){
-                return new StringWriter();
+                return OffloadingParallelTask(startTask,endTask,30);
             }else {
                 return OffLoadingSequenceTask(startTask, endTask);
             }
     }
-
     public StringWriter OffLoadingSequenceTask(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
 
             // offloading sequence task
@@ -265,13 +264,13 @@ public class WorkFlowGenerate {
             endTask = graphMapBackword.get(endTask).get(0);
             FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
             InitializeXmlSerializer();
-            TaskToBeOffloading(startTask, endTask);
+            TaskToBeOffloadingSequence(startTask, endTask);
             xmlSerializer.endTag("", "process");
             FinalizeXmlSerializer();
             return writer;
     }
     //So far only to able to offloading sequenceTask
-    public void TaskToBeOffloading(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
+    public void TaskToBeOffloadingSequence(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
         if(startTask.equals(endTask)){
             //only one task need to offloading
             xmlSerializer.startTag("", "sequence");
@@ -291,7 +290,58 @@ public class WorkFlowGenerate {
                     for (int i = 0; i < nextActivities; i++) {
                         startActivityInsideFlow = graphMap.get(startTask).get(i);
                         endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
-                        TaskToBeOffloading(startActivityInsideFlow, endFlowActivity);
+                        TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
+
+                    }
+                    xmlSerializer.endTag("", "flow");
+                    startTask = graphMap.get(endFlowActivity).get(0);
+                }
+                else {
+                    startTask = graphMap.get(startTask).get(0);
+                }
+
+            }
+            xmlSerializer.endTag("", "sequence");
+        }
+    }
+
+    public StringWriter OffloadingParallelTask(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException{
+
+        // offloading sequence task
+//        startTask = graphMap.get(startTask).get(0);
+        endTask = graphMapBackword.get(endTask).get(0);
+        FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+        InitializeXmlSerializer();
+        TaskToBeOffloadingParallel(startTask, endTask, subtasks);
+        xmlSerializer.endTag("", "process");
+        FinalizeXmlSerializer();
+        return writer;
+    }
+
+
+    //So far only to able to offloading sequenceTask
+    public void TaskToBeOffloadingParallel(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException{
+        if(startTask.equals(endTask)){
+            //only one task need to offloading
+            xmlSerializer.startTag("", "sequence");
+            CreateCurrentXMLTag(startTask);
+            xmlSerializer.endTag("", "sequence");
+            xmlSerializer.endTag("", "process");
+        }else{
+            xmlSerializer.startTag("", "sequence");
+            while(!startTask.equals(graphMap.get(endTask).get(0))){
+                CreateCurrentXMLTag(startTask);
+//                startTask = graphMap.get(startTask).get(0);
+                int nextActivities = graphMap.get(startTask).size();
+                if(nextActivities >1) {
+                    nextActivities = subtasks;
+                    String endFlowActivity= null;
+                    String startActivityInsideFlow = null;
+                    xmlSerializer.startTag("", "flow");
+                    for (int i = 0; i < nextActivities; i++) {
+                        startActivityInsideFlow = graphMap.get(startTask).get(i);
+                        endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
+                        TaskToBeOffloadingParallel(startActivityInsideFlow, endFlowActivity,subtasks);
 
                     }
                     xmlSerializer.endTag("", "flow");
