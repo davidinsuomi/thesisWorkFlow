@@ -17,7 +17,16 @@ import java.net.URL;
  * Created by ding on 2/1/2015.
  */
 public class OffloadingToServer {
-    public void PostBPELtoServer(String url, InputStream fileToOffloadingStream){
+    private static void copyStream(InputStream input, OutputStream output)
+            throws IOException {
+        byte[] buffer = new byte[1024]; // Adjust if you want
+        int bytesRead;
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+    }
+
+    public void PostBPELtoServer(String url, InputStream fileToOffloadingStream) {
 //		String boundary = Long.toHexString(System.currentTimeMillis()); // get generate some random value
 //		String CRLF = "\r\n"; //Line separator required by multipart/form-data.
 //		URLConnection connection = new URL(url).openConnection();
@@ -54,13 +63,13 @@ public class OffloadingToServer {
         String pathToOurFile = "/bpel.zip";
         String lineEnd = "\r\n";
         String twoHyphens = "--";
-        String boundary =  "*****";
+        String boundary = "*****";
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1*1024*1024;
+        int maxBufferSize = 1 * 1024 * 1024;
 
-        try{
+        try {
             URL mUrl = new URL(url);
             connection = (HttpURLConnection) mUrl.openConnection();
             // Allow Inputs &amp; Outputs.
@@ -71,11 +80,11 @@ public class OffloadingToServer {
             connection.setRequestMethod("POST");
 
             connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
-            outputStream = new DataOutputStream( connection.getOutputStream() );
+            outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile +"\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
 
             bytesAvailable = fileToOffloadingStream.available();
@@ -85,7 +94,7 @@ public class OffloadingToServer {
             //Read File
             bytesRead = fileToOffloadingStream.read(buffer, 0, bufferSize);
 
-            while(bytesRead > 0){
+            while (bytesRead > 0) {
                 outputStream.write(buffer, 0, bufferSize);
                 bytesAvailable = fileToOffloadingStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -103,37 +112,25 @@ public class OffloadingToServer {
             outputStream.flush();
             outputStream.close();
 
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             //Exception handling
         }
 
     }
 
-    private static void copyStream(InputStream input, OutputStream output)
-            throws IOException
-    {
-        byte[] buffer = new byte[1024]; // Adjust if you want
-        int bytesRead;
-        while ((bytesRead = input.read(buffer)) != -1)
-        {
-            output.write(buffer, 0, bytesRead);
-        }
-    }
-
-    private File createFileFromInputStream(InputStream inputStream){
-        try{
+    private File createFileFromInputStream(InputStream inputStream) {
+        try {
             File f = new File("taskToOffLoading.zip");
             OutputStream outputStream = new FileOutputStream(f);
             byte buffer[] = new byte[1024];
             int length = 0;
-            while((length = inputStream.read(buffer)) > 0){
-                outputStream.write(buffer,0,length);
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
             }
             outputStream.close();
             inputStream.close();
             return f;
-        }catch(IOException e){
+        } catch (IOException e) {
 
         }
         return null;

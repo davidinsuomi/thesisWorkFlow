@@ -17,9 +17,9 @@ public class BpelServiceActivity extends Activity {
         super.onCreate(savedInstanceState);
         BpelHttpServer server = new BpelHttpServer();
 
-        try{
+        try {
             server.start();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -1,6 +1,7 @@
 package ee.ut.cs.thesisworkflow.workflow;
 
 import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -21,7 +22,7 @@ public class Compress {
     }
 
     public void zip() {
-        try  {
+        try {
             BufferedInputStream origin = null;
             FileOutputStream dest = new FileOutputStream(_zipFile);
 
@@ -29,7 +30,7 @@ public class Compress {
 
             byte data[] = new byte[BUFFER];
 
-            for(int i=0; i < _files.length; i++) {
+            for (int i = 0; i < _files.length; i++) {
                 Log.v("Compress", "Adding: " + _files[i]);
                 FileInputStream fi = new FileInputStream(_files[i]);
                 origin = new BufferedInputStream(fi, BUFFER);
@@ -43,7 +44,7 @@ public class Compress {
             }
 
             out.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
