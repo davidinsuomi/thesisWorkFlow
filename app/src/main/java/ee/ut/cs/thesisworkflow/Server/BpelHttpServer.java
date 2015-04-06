@@ -61,7 +61,7 @@ public class BpelHttpServer extends NanoHTTPD {
 
 
     private void ParsingBpelWorkFlow(String bpelXmlString){
-        Log.e(TAG,bpelXmlString);
+        longInfo(bpelXmlString);
         InputStream stream = new ByteArrayInputStream(bpelXmlString.getBytes(StandardCharsets.UTF_8));
         WorkFlowXmlParser workFlowXmlParser = new WorkFlowXmlParser();
         WorkFlowExecution workFlowExecution = new WorkFlowExecution();
@@ -76,5 +76,13 @@ public class BpelHttpServer extends NanoHTTPD {
         if(workFlowProcess!= null) {
             workFlowExecution.BeginWorkFlow(workFlowProcess);
         }
+    }
+
+    public  void longInfo(String str) {
+        if(str.length() > 4000) {
+            Log.e(TAG, str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.e(TAG, str);
     }
 }

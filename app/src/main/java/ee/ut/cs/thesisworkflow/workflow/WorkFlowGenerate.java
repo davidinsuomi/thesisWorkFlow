@@ -28,9 +28,7 @@ public class WorkFlowGenerate {
     private ArrayList<WorkFlowVariable> variables;
     private ArrayList<PartnerLink> partnerLinks;
 
-    private Map<String,ArrayList<String>> offloadingGraphMap;
-    private Map<String,ArrayList<String>> offloadingGraphMapBackword;
-    private Map<String,WorkFlowActivity> offloadingActivityMap;
+
     private Map<String,WorkFlowVariable> offloadingVariables = new HashMap<String,WorkFlowVariable>();
     private Map<String,PartnerLink> offloadingPartnerLinks = new HashMap<String,PartnerLink>();
 
@@ -256,7 +254,7 @@ public class WorkFlowGenerate {
             if(IsOffloadingParalleTask(startTask,endTask)){
                 return new StringWriter();
             }else {
-                return OffLoadingSequenceTask("Beginnering", "endPoint");
+                return OffLoadingSequenceTask(startTask, endTask);
             }
     }
 

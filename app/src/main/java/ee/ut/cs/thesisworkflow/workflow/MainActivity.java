@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         InputStream inputStream = null;
 
         try{
-            inputStream = assetManager.open("bpel08.xml" );
+            inputStream = assetManager.open("bpel09.xml" );
             if(inputStream !=null ){
                 workFlowProcess = workFlowXmlParser.parse(inputStream);
             }
@@ -83,15 +83,20 @@ public class MainActivity extends Activity {
         WorkFlowGenerate generate =  new WorkFlowGenerate(workFlowProcess);
         StringWriter writer = new StringWriter();
         try {
-                writer = generate.OffloadingTask("findCoap", "endPoint");
-
+              writer = generate.OffloadingTask("Beginnering", "ending");
         } catch (IllegalArgumentException | IllegalStateException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Log.e(TAG,writer.toString());
+       longInfo(writer.toString());
 
-
+    }
+    public  void longInfo(String str) {
+        if(str.length() > 4000) {
+            Log.e(TAG, str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.e(TAG, str);
     }
 
     private void TestWorkflowUploadInApacheOde(){

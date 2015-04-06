@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<process>
+    <partnerLinks>
+        <partnerLink partnerLinkType="tns:GetData" name="BLEScanning">coap://localhost/coapIP</partnerLink>
+        <partnerLink partnerLinkType="tns:GetData" name="matchingCoap">coap://localhost:5684/temperatureMatching</partnerLink>
+        <partnerLink partnerLinkType="tns:GetData" name="getWellKnowInCoap">$scanCoapResultUsingBLE</partnerLink>
+    </partnerLinks>
+    <variables>
+        <variable messageType="tns:String" name="postData6" />
+        <variable messageType="tns:String" name="postData1" />
+        <variable messageType="tns:String" name="postData30" />
+        <variable messageType="tns:String" name="coapServiceResponse25" />
+        <variable messageType="tns:String" name="coapServiceResponse42" />
+        <variable messageType="tns:String" name="coapServiceResponse34" />
+        <variable messageType="tns:String" name="coapServiceResponse15" />
+        <variable messageType="tns:String" name="coapServiceResponse5" />
+        <variable messageType="tns:String" name="postData23" />
+        <variable messageType="tns:String" name="coapServiceResponse37" />
+        <variable messageType="tns:String" name="coapServiceResponse31" />
+        <variable messageType="tns:String" name="postData3" />
+        <variable messageType="tns:String" name="coapServiceResponse46" />
+        <variable messageType="tns:String" name="coapServiceResponse2" />
+        <variable messageType="tns:String" name="coapServiceResponse44" />
+        <variable messageType="tns:String" name="postData" />
+        <variable messageType="tns:String" name="postData14" />
+        <variable messageType="tns:String" name="coapServiceResponse39" />
+        <variable messageType="tns:String" name="coapServiceResponse45" />
+        <variable messageType="tns:String" name="coapServiceResponse13" />
+        <variable messageType="tns:String" name="postData28" />
+        <variable messageType="tns:String" name="coapServiceResponse3" />
+        <variable messageType="tns:String" name="postData26" />
+        <variable messageType="tns:String" name="postData45" />
+        <variable messageType="tns:String" name="postData7" />
+        <variable messageType="tns:String" name="postData4" />
+        <variable messageType="tns:String" name="postData42" />
+        <variable messageType="tns:String" name="coapServiceResponse38" />
+        <variable messageType="tns:String" name="postData13" />
+        <variable messageType="tns:String" name="coapServiceResponse16" />
+        <variable messageType="tns:String" name="coapServiceResponse30" />
+        <variable messageType="tns:String" name="coapServiceResponse12" />
+        <variable messageType="tns:String" name="coapServiceResponse40" />
+        <variable messageType="tns:String" name="postData9" />
+        <variable messageType="tns:String" name="coapServiceResponse19" />
+        <variable messageType="tns:String" name="coapServiceResponse10" />
+        <variable messageType="tns:List" name="scanCoapResultUsingBLE" />
+        <variable messageType="tns:String" name="postData27" />
+        <variable messageType="tns:String" name="postData36" />
+        <variable messageType="tns:String" name="coapServiceResponse4" />
+        <variable messageType="tns:String" name="postData47" />
+        <variable messageType="tns:String" name="postData25" />
+        <variable messageType="tns:String" name="postData18" />
+        <variable messageType="tns:String" name="coapServiceResponse6" />
+        <variable messageType="tns:String" name="postData35" />
+        <variable messageType="tns:String" name="coapServiceResponse22" />
+        <variable messageType="tns:String" name="postData48" />
+        <variable messageType="tns:String" name="coapServiceResponse11" />
+        <variable messageType="tns:String" name="postData32" />
+        <variable messageType="tns:String" name="postData40" />
+        <variable messageType="tns:String" name="postData12" />
+        <variable messageType="tns:String" name="coapServiceResponse1" />
+        <variable messageType="tns:String" name="postData34" />
+        <variable messageType="tns:String" name="postData44" />
+        <variable messageType="tns:String" name="coapServiceResponse28" />
+        <variable messageType="tns:String" name="coapServiceResponse17" />
+        <variable messageType="tns:String" name="postData5" />
+        <variable messageType="tns:String" name="postData39" />
+        <variable messageType="tns:String" name="postData43" />
+        <variable messageType="tns:String" name="coapServiceResponse8" />
+        <variable messageType="tns:String" name="coapServiceResponse29" />
+        <variable messageType="tns:String" name="postData37" />
+        <variable messageType="tns:String" name="coapServiceResponse21" />
+        <variable messageType="tns:String" name="postData8" />
+        <variable messageType="tns:String" name="postData10" />
+        <variable messageType="tns:String" name="postData20" />
+        <variable messageType="tns:String" name="postData22" />
+        <variable messageType="tns:String" name="postData21" />
+        <variable messageType="tns:String" name="postData2" />
+        <variable messageType="tns:String" name="coapServiceResponse9" />
+        <variable messageType="tns:String" name="coapServiceResponse26" />
+        <variable messageType="tns:String" name="postData11" />
+        <variable messageType="tns:String" name="coapServiceResponse23" />
+        <variable messageType="tns:String" name="coapServiceResponse35" />
+        <variable messageType="tns:String" name="postData31" />
+        <variable messageType="tns:String" name="postData29" />
+        <variable messageType="tns:String" name="coapServiceResponse7" />
+        <variable messageType="tns:String" name="postData38" />
+        <variable messageType="tns:String" name="postData19" />
+        <variable messageType="tns:String" name="postData41" />
+        <variable messageType="tns:String" name="coapServiceResponse47" />
+        <variable messageType="tns:String" name="postData17" />
+        <variable messageType="tns:String" name="coapServiceResponse41" />
+        <variable messageType="tns:String" name="postData16" />
+        <variable messageType="tns:String" name="postData33" />
+        <variable messageType="tns:String" name="postData46" />
+        <variable messageType="tns:String" name="coapServiceResponse32" />
+        <variable messageType="tns:String" name="coapServiceResponse33" />
+        <variable messageType="tns:String" name="postData24" />
+        <variable messageType="tns:String" name="coapServiceResponse43" />
+        <variable messageType="tns:String" name="mathcingResult" />
+        <variable messageType="tns:String" name="coapServiceResponse20" />
+        <variable messageType="tns:String" name="postData49" />
+        <variable messageType="tns:String" name="coapServiceResponse49" />
+        <variable messageType="tns:String" name="coapServiceResponse27" />
+        <variable messageType="tns:String" name="coapServiceResponse" />
+        <variable messageType="tns:String" name="coapServiceResponse14" />
+        <variable messageType="tns:String" name="coapServiceResponse48" />
+        <variable messageType="tns:String" name="postData15" />
+        <variable messageType="tns:String" name="coapServiceResponse24" />
+        <variable messageType="tns:String" name="coapServiceResponse36" />
+        <variable messageType="tns:String" name="coapServiceResponse18" />
+    </variables>
+    <sequence>
+        <invoke name="findCoap" partnerLink="BLEScanning" inputVariable="" outputVariable="scanCoapResultUsingBLE" />
+        <flow>
+            <sequence>
+                <invoke name="CoapServiceDiscovery" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse" />
+                <assign name="assign">
+                    <copy>
+                        <from variable="coapServiceResponse" />
+                        <to variable="postData" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap" partnerLink="matchingCoap" operation="POST" inputVariable="postData" outputVariable="mathcingResult" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery1" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse1" />
+                <assign name="assign1">
+                    <copy>
+                        <from variable="coapServiceResponse1" />
+                        <to variable="postData1" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap1" partnerLink="matchingCoap" operation="POST" inputVariable="postData1" outputVariable="mathcingResult1" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery2" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse2" />
+                <assign name="assign2">
+                    <copy>
+                        <from variable="coapServiceResponse2" />
+                        <to variable="postData2" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap2" partnerLink="matchingCoap" operation="POST" inputVariable="postData2" outputVariable="mathcingResult2" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery3" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse3" />
+                <assign name="assign3">
+                    <copy>
+                        <from variable="coapServiceResponse3" />
+                        <to variable="postData3" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap3" partnerLink="matchingCoap" operation="POST" inputVariable="postData3" outputVariable="mathcingResult3" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery4" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse4" />
+                <assign name="assign4">
+                    <copy>
+                        <from variable="coapServiceResponse4" />
+                        <to variable="postData4" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap4" partnerLink="matchingCoap" operation="POST" inputVariable="postData4" outputVariable="mathcingResult4" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery5" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse5" />
+                <assign name="assign5">
+                    <copy>
+                        <from variable="coapServiceResponse5" />
+                        <to variable="postData5" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap5" partnerLink="matchingCoap" operation="POST" inputVariable="postData5" outputVariable="mathcingResult5" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery6" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse6" />
+                <assign name="assign6">
+                    <copy>
+                        <from variable="coapServiceResponse6" />
+                        <to variable="postData6" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap6" partnerLink="matchingCoap" operation="POST" inputVariable="postData6" outputVariable="mathcingResult6" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery7" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse7" />
+                <assign name="assign7">
+                    <copy>
+                        <from variable="coapServiceResponse7" />
+                        <to variable="postData7" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap7" partnerLink="matchingCoap" operation="POST" inputVariable="postData7" outputVariable="mathcingResult7" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery8" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse8" />
+                <assign name="assign8">
+                    <copy>
+                        <from variable="coapServiceResponse8" />
+                        <to variable="postData8" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap8" partnerLink="matchingCoap" operation="POST" inputVariable="postData8" outputVariable="mathcingResult8" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery9" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse9" />
+                <assign name="assign9">
+                    <copy>
+                        <from variable="coapServiceResponse9" />
+                        <to variable="postData9" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap9" partnerLink="matchingCoap" operation="POST" inputVariable="postData9" outputVariable="mathcingResult9" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery10" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse10" />
+                <assign name="assign10">
+                    <copy>
+                        <from variable="coapServiceResponse10" />
+                        <to variable="postData10" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap10" partnerLink="matchingCoap" operation="POST" inputVariable="postData10" outputVariable="mathcingResult10" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery11" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse11" />
+                <assign name="assign11">
+                    <copy>
+                        <from variable="coapServiceResponse11" />
+                        <to variable="postData11" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap11" partnerLink="matchingCoap" operation="POST" inputVariable="postData11" outputVariable="mathcingResult11" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery12" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse12" />
+                <assign name="assign12">
+                    <copy>
+                        <from variable="coapServiceResponse12" />
+                        <to variable="postData12" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap12" partnerLink="matchingCoap" operation="POST" inputVariable="postData12" outputVariable="mathcingResult12" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery13" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse13" />
+                <assign name="assign13">
+                    <copy>
+                        <from variable="coapServiceResponse13" />
+                        <to variable="postData13" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap13" partnerLink="matchingCoap" operation="POST" inputVariable="postData13" outputVariable="mathcingResult13" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery14" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse14" />
+                <assign name="assign14">
+                    <copy>
+                        <from variable="coapServiceResponse14" />
+                        <to variable="postData14" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap14" partnerLink="matchingCoap" operation="POST" inputVariable="postData14" outputVariable="mathcingResult14" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery15" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse15" />
+                <assign name="assign15">
+                    <copy>
+                        <from variable="coapServiceResponse15" />
+                        <to variable="postData15" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap15" partnerLink="matchingCoap" operation="POST" inputVariable="postData15" outputVariable="mathcingResult15" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery16" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse16" />
+                <assign name="assign16">
+                    <copy>
+                        <from variable="coapServiceResponse16" />
+                        <to variable="postData16" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap16" partnerLink="matchingCoap" operation="POST" inputVariable="postData16" outputVariable="mathcingResult16" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery17" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse17" />
+                <assign name="assign17">
+                    <copy>
+                        <from variable="coapServiceResponse17" />
+                        <to variable="postData17" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap17" partnerLink="matchingCoap" operation="POST" inputVariable="postData17" outputVariable="mathcingResult17" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery18" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse18" />
+                <assign name="assign18">
+                    <copy>
+                        <from variable="coapServiceResponse18" />
+                        <to variable="postData18" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap18" partnerLink="matchingCoap" operation="POST" inputVariable="postData18" outputVariable="mathcingResult18" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery19" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse19" />
+                <assign name="assign19">
+                    <copy>
+                        <from variable="coapServiceResponse19" />
+                        <to variable="postData19" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap19" partnerLink="matchingCoap" operation="POST" inputVariable="postData19" outputVariable="mathcingResult19" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery20" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse20" />
+                <assign name="assign20">
+                    <copy>
+                        <from variable="coapServiceResponse20" />
+                        <to variable="postData20" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap20" partnerLink="matchingCoap" operation="POST" inputVariable="postData20" outputVariable="mathcingResult20" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery21" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse21" />
+                <assign name="assign21">
+                    <copy>
+                        <from variable="coapServiceResponse21" />
+                        <to variable="postData21" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap21" partnerLink="matchingCoap" operation="POST" inputVariable="postData21" outputVariable="mathcingResult21" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery22" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse22" />
+                <assign name="assign22">
+                    <copy>
+                        <from variable="coapServiceResponse22" />
+                        <to variable="postData22" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap22" partnerLink="matchingCoap" operation="POST" inputVariable="postData22" outputVariable="mathcingResult22" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery23" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse23" />
+                <assign name="assign23">
+                    <copy>
+                        <from variable="coapServiceResponse23" />
+                        <to variable="postData23" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap23" partnerLink="matchingCoap" operation="POST" inputVariable="postData23" outputVariable="mathcingResult23" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery24" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse24" />
+                <assign name="assign24">
+                    <copy>
+                        <from variable="coapServiceResponse24" />
+                        <to variable="postData24" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap24" partnerLink="matchingCoap" operation="POST" inputVariable="postData24" outputVariable="mathcingResult24" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery25" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse25" />
+                <assign name="assign25">
+                    <copy>
+                        <from variable="coapServiceResponse25" />
+                        <to variable="postData25" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap25" partnerLink="matchingCoap" operation="POST" inputVariable="postData25" outputVariable="mathcingResult25" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery26" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse26" />
+                <assign name="assign26">
+                    <copy>
+                        <from variable="coapServiceResponse26" />
+                        <to variable="postData26" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap26" partnerLink="matchingCoap" operation="POST" inputVariable="postData26" outputVariable="mathcingResult26" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery27" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse27" />
+                <assign name="assign27">
+                    <copy>
+                        <from variable="coapServiceResponse27" />
+                        <to variable="postData27" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap27" partnerLink="matchingCoap" operation="POST" inputVariable="postData27" outputVariable="mathcingResult27" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery28" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse28" />
+                <assign name="assign28">
+                    <copy>
+                        <from variable="coapServiceResponse28" />
+                        <to variable="postData28" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap28" partnerLink="matchingCoap" operation="POST" inputVariable="postData28" outputVariable="mathcingResult28" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery29" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse29" />
+                <assign name="assign29">
+                    <copy>
+                        <from variable="coapServiceResponse29" />
+                        <to variable="postData29" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap29" partnerLink="matchingCoap" operation="POST" inputVariable="postData29" outputVariable="mathcingResult29" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery30" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse30" />
+                <assign name="assign30">
+                    <copy>
+                        <from variable="coapServiceResponse30" />
+                        <to variable="postData30" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap30" partnerLink="matchingCoap" operation="POST" inputVariable="postData30" outputVariable="mathcingResult30" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery31" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse31" />
+                <assign name="assign31">
+                    <copy>
+                        <from variable="coapServiceResponse31" />
+                        <to variable="postData31" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap31" partnerLink="matchingCoap" operation="POST" inputVariable="postData31" outputVariable="mathcingResult31" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery32" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse32" />
+                <assign name="assign32">
+                    <copy>
+                        <from variable="coapServiceResponse32" />
+                        <to variable="postData32" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap32" partnerLink="matchingCoap" operation="POST" inputVariable="postData32" outputVariable="mathcingResult32" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery33" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse33" />
+                <assign name="assign33">
+                    <copy>
+                        <from variable="coapServiceResponse33" />
+                        <to variable="postData33" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap33" partnerLink="matchingCoap" operation="POST" inputVariable="postData33" outputVariable="mathcingResult33" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery34" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse34" />
+                <assign name="assign34">
+                    <copy>
+                        <from variable="coapServiceResponse34" />
+                        <to variable="postData34" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap34" partnerLink="matchingCoap" operation="POST" inputVariable="postData34" outputVariable="mathcingResult34" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery35" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse35" />
+                <assign name="assign35">
+                    <copy>
+                        <from variable="coapServiceResponse35" />
+                        <to variable="postData35" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap35" partnerLink="matchingCoap" operation="POST" inputVariable="postData35" outputVariable="mathcingResult35" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery36" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse36" />
+                <assign name="assign36">
+                    <copy>
+                        <from variable="coapServiceResponse36" />
+                        <to variable="postData36" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap36" partnerLink="matchingCoap" operation="POST" inputVariable="postData36" outputVariable="mathcingResult36" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery37" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse37" />
+                <assign name="assign37">
+                    <copy>
+                        <from variable="coapServiceResponse37" />
+                        <to variable="postData37" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap37" partnerLink="matchingCoap" operation="POST" inputVariable="postData37" outputVariable="mathcingResult37" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery38" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse38" />
+                <assign name="assign38">
+                    <copy>
+                        <from variable="coapServiceResponse38" />
+                        <to variable="postData38" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap38" partnerLink="matchingCoap" operation="POST" inputVariable="postData38" outputVariable="mathcingResult38" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery39" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse39" />
+                <assign name="assign39">
+                    <copy>
+                        <from variable="coapServiceResponse39" />
+                        <to variable="postData39" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap39" partnerLink="matchingCoap" operation="POST" inputVariable="postData39" outputVariable="mathcingResult39" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery40" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse40" />
+                <assign name="assign40">
+                    <copy>
+                        <from variable="coapServiceResponse40" />
+                        <to variable="postData40" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap40" partnerLink="matchingCoap" operation="POST" inputVariable="postData40" outputVariable="mathcingResult40" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery41" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse41" />
+                <assign name="assign41">
+                    <copy>
+                        <from variable="coapServiceResponse41" />
+                        <to variable="postData41" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap41" partnerLink="matchingCoap" operation="POST" inputVariable="postData41" outputVariable="mathcingResult41" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery42" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse42" />
+                <assign name="assign42">
+                    <copy>
+                        <from variable="coapServiceResponse42" />
+                        <to variable="postData42" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap42" partnerLink="matchingCoap" operation="POST" inputVariable="postData42" outputVariable="mathcingResult42" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery43" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse43" />
+                <assign name="assign43">
+                    <copy>
+                        <from variable="coapServiceResponse43" />
+                        <to variable="postData43" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap43" partnerLink="matchingCoap" operation="POST" inputVariable="postData43" outputVariable="mathcingResult43" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery44" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse44" />
+                <assign name="assign44">
+                    <copy>
+                        <from variable="coapServiceResponse44" />
+                        <to variable="postData44" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap44" partnerLink="matchingCoap" operation="POST" inputVariable="postData44" outputVariable="mathcingResult44" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery45" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse45" />
+                <assign name="assign45">
+                    <copy>
+                        <from variable="coapServiceResponse45" />
+                        <to variable="postData45" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap45" partnerLink="matchingCoap" operation="POST" inputVariable="postData45" outputVariable="mathcingResult45" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery46" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse46" />
+                <assign name="assign46">
+                    <copy>
+                        <from variable="coapServiceResponse46" />
+                        <to variable="postData46" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap46" partnerLink="matchingCoap" operation="POST" inputVariable="postData46" outputVariable="mathcingResult46" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery47" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse47" />
+                <assign name="assign47">
+                    <copy>
+                        <from variable="coapServiceResponse47" />
+                        <to variable="postData47" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap47" partnerLink="matchingCoap" operation="POST" inputVariable="postData47" outputVariable="mathcingResult47" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery48" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse48" />
+                <assign name="assign48">
+                    <copy>
+                        <from variable="coapServiceResponse48" />
+                        <to variable="postData48" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap48" partnerLink="matchingCoap" operation="POST" inputVariable="postData48" outputVariable="mathcingResult48" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery49" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse49" />
+                <assign name="assign49">
+                    <copy>
+                        <from variable="coapServiceResponse49" />
+                        <to variable="postData49" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap49" partnerLink="matchingCoap" operation="POST" inputVariable="postData49" outputVariable="mathcingResult49" />
+            </sequence>
+        </flow>
+        <assign name="endPoint">
+            <copy>
+                <from variable="coapServiceResponse" />
+                <to variable="postData" />
+            </copy>
+        </assign>
+    </sequence>
+</process>
