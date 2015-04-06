@@ -78,8 +78,8 @@ public class WorkFlowXmlParser {
         }
         addMissingFlowTags();
         addMissingEndFlag();
-        parsingGraphMapBackword();
         addRepestTask();
+        parsingGraphMapBackword();
         workFlowProcess.activityMap = activityMap;
         workFlowProcess.graphMap = graphMap;
         workFlowProcess.graphMapBackword = graphMapBackword;
