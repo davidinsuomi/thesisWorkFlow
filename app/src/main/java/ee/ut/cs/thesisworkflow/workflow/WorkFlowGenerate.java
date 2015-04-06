@@ -245,15 +245,32 @@ public class WorkFlowGenerate {
             }
         }
     }
-    public StringWriter offLoadingTask(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
-        startTask = graphMap.get(startTask).get(0);
-        endTask = graphMapBackword.get(endTask).get(0);
-        FindNewOffloadingVariablesAndPartnerLink(startTask,endTask);
-        InitializeXmlSerializer();
-        TaskToBeOffloading(startTask,endTask);
-        xmlSerializer.endTag("", "process");
-        FinalizeXmlSerializer();
-        return writer;
+
+    public boolean IsOffloadingParalleTask(String startTask, String endTask){
+        if(graphMap.get(startTask).size() > 1) {
+            return true;
+        }else
+            return false;
+    }
+    public StringWriter OffloadingTask(String startTask, String endTask) throws IOException {
+            if(IsOffloadingParalleTask(startTask,endTask)){
+                return new StringWriter();
+            }else {
+                return OffLoadingSequenceTask("Beginnering", "endPoint");
+            }
+    }
+
+    public StringWriter OffLoadingSequenceTask(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
+
+            // offloading sequence task
+            startTask = graphMap.get(startTask).get(0);
+            endTask = graphMapBackword.get(endTask).get(0);
+            FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+            InitializeXmlSerializer();
+            TaskToBeOffloading(startTask, endTask);
+            xmlSerializer.endTag("", "process");
+            FinalizeXmlSerializer();
+            return writer;
     }
     //So far only to able to offloading sequenceTask
     public void TaskToBeOffloading(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{

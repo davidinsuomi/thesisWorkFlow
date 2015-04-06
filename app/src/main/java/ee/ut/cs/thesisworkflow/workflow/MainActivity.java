@@ -83,7 +83,8 @@ public class MainActivity extends Activity {
         WorkFlowGenerate generate =  new WorkFlowGenerate(workFlowProcess);
         StringWriter writer = new StringWriter();
         try {
-            writer = generate.offLoadingTask("findCoap", "endPoint");
+                writer = generate.OffloadingTask("findCoap", "endPoint");
+
         } catch (IllegalArgumentException | IllegalStateException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
