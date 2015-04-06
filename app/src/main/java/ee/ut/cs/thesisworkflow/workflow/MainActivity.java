@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         InputStream inputStream = null;
 
         try{
-            inputStream = assetManager.open("bpel07.xml" );
+            inputStream = assetManager.open("bpel08.xml" );
             if(inputStream !=null ){
                 workFlowProcess = workFlowXmlParser.parse(inputStream);
             }
@@ -74,13 +74,12 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-        workFlowExecution.BeginWorkFlow(workFlowProcess);
+//        workFlowExecution.BeginWorkFlow(workFlowProcess);
 
     }
     private void TestWorkFlowGenerate(){
         //test workflow offloading
         //===================
-        SystemClock.sleep(10000);
         WorkFlowGenerate generate =  new WorkFlowGenerate(workFlowProcess);
         StringWriter writer = new StringWriter();
         try {

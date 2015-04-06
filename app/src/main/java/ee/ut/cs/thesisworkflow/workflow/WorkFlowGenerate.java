@@ -246,6 +246,8 @@ public class WorkFlowGenerate {
         }
     }
     public StringWriter offLoadingTask(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException{
+        startTask = graphMap.get(startTask).get(0);
+        endTask = graphMapBackword.get(endTask).get(0);
         FindNewOffloadingVariablesAndPartnerLink(startTask,endTask);
         InitializeXmlSerializer();
         TaskToBeOffloading(startTask,endTask);

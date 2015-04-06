@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<process>
+<partnerLinks>
+    <partnerLink partnerLinkType="tns:GetData" name="BLEScanning">coap://localhost/coapIP</partnerLink>
+    <partnerLink partnerLinkType="tns:GetData" name="matchingCoap">coap://localhost:5684/temperatureMatching</partnerLink>
+    <partnerLink partnerLinkType="tns:GetData" name="getWellKnowInCoap">$scanCoapResultUsingBLE</partnerLink>
+</partnerLinks>
+<variables>
+    <variable messageType="tns:String" name="coapServiceResponse1">&lt;/.well-known/core&gt;;ct=40,&lt;/coapIP&gt;;n="GET a list of coap IP address";rt="http://198.12.87.129"</variable>
+    <variable messageType="tns:String" name="mathcingResult" />
+    <variable messageType="tns:List" name="scanCoapResultUsingBLE">coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/,coap://localhost/</variable>
+    <variable messageType="tns:String" name="postData1">&lt;/.well-known/core&gt;;ct=40,&lt;/coapIP&gt;;n="GET a list of coap IP address";rt="http://198.12.87.129"</variable>
+    <variable messageType="tns:String" name="postData" />
+    <variable messageType="tns:String" name="coapServiceResponse" />
+</variables>
+<sequence>
+    <invoke name="findCoap" partnerLink="BLEScanning" inputVariable="" outputVariable="scanCoapResultUsingBLE" />
+    <flow>
+        <sequence>
+            <invoke name="CoapServiceDiscovery" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse" />
+            <assign name="assign">
+                <copy>
+                    <from variable="coapServiceResponse" />
+                    <to variable="postData" />
+                </copy>
+            </assign>
+            <invoke name="invokeMatchingCoap" partnerLink="matchingCoap" operation="POST" inputVariable="postData" outputVariable="mathcingResult" />
+        </sequence>
+        <sequence>
+            <invoke name="CoapServiceDiscovery1" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse1" />
+            <assign name="assign1">
+                <copy>
+                    <from variable="coapServiceResponse1" />
+                    <to variable="postData1" />
+                </copy>
+            </assign>
+            <invoke name="invokeMatchingCoap1" partnerLink="matchingCoap" operation="POST" inputVariable="postData1" outputVariable="mathcingResult1" />
+        </sequence>
+    </flow>
+    <assign name="endPoint">
+        <copy>
+            <from variable="coapServiceResponse" />
+            <to variable="postData" />
+        </copy>
+    </assign>
+</sequence>
+</process>

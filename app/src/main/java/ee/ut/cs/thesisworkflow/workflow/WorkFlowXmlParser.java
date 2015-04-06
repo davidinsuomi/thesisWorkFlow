@@ -175,16 +175,24 @@ public class WorkFlowXmlParser {
 
             String name = parser.getName();
             if (name.equals("variable")) {
-                parser.require(XmlPullParser.START_TAG, ns, "variable");
+//                parser.require(XmlPullParser.START_TAG, ns, "variable");
                 variableName = parser.getAttributeValue(ns, "name");
                 variableMessageType = parser.getAttributeValue(ns,"messageType");
                 WorkFlowVariable variable = new WorkFlowVariable(variableName,variableMessageType);
                 //TODO NeedTo ReadVariable
-                
+                if(parser.next() == XmlPullParser.TEXT){
+                    String text = parser.getText();
+                    if(variableMessageType.contains("List")){
+                        variable.datas = Arrays.asList(text.split(","));
+                    }else if(variableMessageType.contains("String")){
+                        variable.data = text;
+                    }
+                    parser.nextTag();
+                }
 
                 variables.add(variable);
-                parser.nextTag();
-                parser.require(XmlPullParser.END_TAG, ns, "variable");
+                parser.next();
+//                parser.require(XmlPullParser.END_TAG, ns, "variable");
             }
         }
         return variables;
