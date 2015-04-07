@@ -177,8 +177,6 @@ public class WorkFlowGenerate {
         graphMap.put(invoke.name,newArrayList2);
 
         graphMapBackword.put(endTask,newArrayList);
-
-       // WorkFlowInvoke offloadingInvoke = new WorkFlowInvoke("offloadingInvoke","friendOne",)
     }
 
     public void longInfo(String str) {

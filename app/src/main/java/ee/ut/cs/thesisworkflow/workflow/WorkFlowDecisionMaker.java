@@ -1,11 +1,14 @@
 package ee.ut.cs.thesisworkflow.workflow;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import ee.ut.cs.thesisworkflow.Data.Conf;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
@@ -22,8 +25,7 @@ public class WorkFlowDecisionMaker {
     private ArrayList<WorkFlowVariable> variables;
     private ArrayList<PartnerLink> partnerLinks;
     private WorkFlowGenerate generate;
-
-    private ArrayList<String> avaiableExternalIPs = new ArrayList<>(Arrays.asList("http://192.168.0.102:8080,http://192.168.0.103:8080"));
+    private static final String TAG = "WorkFlowDecisionMaker";
 
     public WorkFlowDecisionMaker(WorkFlowProcess workflowProcess) {
         graphMap = workflowProcess.graphMap;
@@ -37,8 +39,15 @@ public class WorkFlowDecisionMaker {
 
     public void MakeDecision(String decisionPoint){
         if(IsOffloadingParalleTask(decisionPoint)){
+            int totalWeight= 0;
+            for(int i = 0 ; i < Conf.IPs.size() ; i ++){
+                totalWeight += Conf.IPs.get(i).weight;
+            }
+            Log.e(TAG,"total weight"  + totalWeight);
 
+            int partitionSize = graphMap.get(decisionPoint).size();
 
+            
         }else{
             //TODO IS SEQUENCE TASK NOT OFF LOADING, THE COMMENT CODE IS HOW TO OFFLOADING SEQUENCE TASK
 //            StringWriter stringWriterSequence = null;
