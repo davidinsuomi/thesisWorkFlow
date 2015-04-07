@@ -66,7 +66,7 @@ public class WorkFlowXmlParser {
             } else if (name.equals("variables")) {
                 workFlowProcess.variables = (readWorkFlowVariable(parser));
             } else if (name.equals("sequence")) {
-                readWorkFlowSequence(parser, "Beginnering", XmlPullParser.END_DOCUMENT);
+                readWorkFlowSequence(parser, "Beginning", XmlPullParser.END_DOCUMENT);
                 break;
             }
             d("TAG", " partnerLink" + workFlowProcess.partnerLinks.size());
@@ -183,7 +183,7 @@ public class WorkFlowXmlParser {
                     if (variableMessageType.contains("List")) {
                         variable.datas = Arrays.asList(text.split(","));
                     } else if (variableMessageType.contains("String")) {
-                        variable.data = text;
+                        variable.SetData(text);
                     }
                     parser.nextTag();
                 }
@@ -224,8 +224,8 @@ public class WorkFlowXmlParser {
 
 
             // check the first run
-            if (previousTag.equals("Beginnering")) {
-                graphMap.put("Beginnering", new ArrayList<String>(Arrays.asList(currentTag)));
+            if (previousTag.equals("Beginning")) {
+                graphMap.put("Beginning", new ArrayList<String>(Arrays.asList(currentTag)));
                 previousTag = currentTag;
                 continue;
             }

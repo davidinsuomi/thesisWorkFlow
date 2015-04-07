@@ -37,7 +37,8 @@
     partnerLinkType="tns:GetData">https://dl.dropboxusercontent.com/u/59860036</partnerLink>
 <partnerLink name="getData6PL"
     partnerLinkType="tns:GetData">https://dl.dropboxusercontent.com/u/59860036</partnerLink>
-
+<partnerLink name="friendOne"
+    partnerLinkType="tns:PostData">https://192.168.0.103</partnerLink>
 <partnerLink name="postDataPL"
     partnerLinkType="tns:PostData">https://posttestserver.com</partnerLink>
 <partnerLink name="postData2PL"

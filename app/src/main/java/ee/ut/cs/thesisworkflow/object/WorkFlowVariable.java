@@ -1,6 +1,7 @@
 package ee.ut.cs.thesisworkflow.object;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class WorkFlowVariable {
     public String name;
     public String messageType;
     private byte[] value;
-    public String data;
-    public List<String> datas;
+    private String data;
+    public  List<String> datas;
     public WorkFlowVariable(String _name, String _messageType){
         name =_name;
         messageType = _messageType;
@@ -37,6 +38,13 @@ public class WorkFlowVariable {
         }
     }
 
+    public String GetData(){
+        return this.data;
+    }
+    public void SetData(String string){
+        this.data = string;
+        value = string.getBytes(Charset.forName("UTF-8"));
+    }
     public boolean HasValue(){
         if(datas !=null || data != null)
             return true;

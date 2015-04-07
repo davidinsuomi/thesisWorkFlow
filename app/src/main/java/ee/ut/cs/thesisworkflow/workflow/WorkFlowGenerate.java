@@ -150,9 +150,51 @@ public class WorkFlowGenerate {
         if (IsOffloadingParalleTask(startTask, endTask)) {
             return OffloadingParallelTask(startTask, endTask, 30);
         } else {
-            return OffLoadingSequenceTask(startTask, endTask);
+            StringWriter stringWriterSequence =  OffLoadingSequenceTask(startTask, endTask);
+            ModifyBpelMap(startTask,endTask,stringWriterSequence);
+            longInfo(stringWriterSequence.toString());
+            return stringWriterSequence;
         }
     }
+
+    private void ModifyBpelMap(String startTask, String endTask,StringWriter writer){
+        //Create offloading input variable
+        WorkFlowVariable offloadingInput = new WorkFlowVariable("offloadingInput","tns:String");
+        WorkFlowVariable offloadingOutput = new WorkFlowVariable("offloadingOutput","tns:String");
+        offloadingInput.SetData(writer.toString());
+
+        variables.add(offloadingInput);
+        variables.add(offloadingOutput);
+        //Create Offloading partnerlink
+
+        PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink","tns:PostData","","http://192.168.0.103");
+        partnerLinks.add(offLoadingPartnerLink);
+
+        WorkFlowInvoke invoke = new WorkFlowInvoke("InvokeOffloading",offLoadingPartnerLink.name,"Post",offloadingInput.name,offloadingOutput.name);
+        activityMap.put(invoke.name,invoke);
+        //update grapmap the next task is new invoke
+        ArrayList<String> newArrayList = new ArrayList<>();
+        newArrayList.add(invoke.name);
+        graphMap.put(startTask,newArrayList);
+
+        //update next inovke activity to endtask
+        ArrayList<String> newArrayList2 = new ArrayList<>();
+        newArrayList2.add(endTask);
+        graphMap.put(invoke.name,newArrayList2);
+
+        graphMapBackword.put(endTask,newArrayList);
+
+       // WorkFlowInvoke offloadingInvoke = new WorkFlowInvoke("offloadingInvoke","friendOne",)
+    }
+
+    public void longInfo(String str) {
+        if (str.length() > 4000) {
+            Log.i(TAG, str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.i(TAG, str);
+    }
+
 
     public StringWriter OffLoadingSequenceTask(String startTask, String endTask) throws IllegalArgumentException, IllegalStateException, IOException {
 
@@ -296,7 +338,7 @@ public class WorkFlowGenerate {
                 output = output.substring(0, output.length() - 1);
                 xmlSerializer.text(output);
             } else {
-                xmlSerializer.text(workFlowVariable.data);
+                xmlSerializer.text(workFlowVariable.GetData());
             }
         }
     }
@@ -418,7 +460,7 @@ public class WorkFlowGenerate {
         activityMap.put("getData5", getData5);
         activityMap.put("postData5", postData5);
 
-        graphMap.put("Beginnering", new ArrayList<String>(Arrays.asList("enterPoint")));
+        graphMap.put("Beginning", new ArrayList<String>(Arrays.asList("enterPoint")));
         graphMap.put("enterPoint", new ArrayList<String>(Arrays.asList("getData1", "getData2", "getData3", "getData4", "getData5")));
         graphMap.put("getData1", new ArrayList<String>(Arrays.asList("postData1")));
         graphMap.put("getData2", new ArrayList<String>(Arrays.asList("postData2")));
@@ -434,7 +476,7 @@ public class WorkFlowGenerate {
 
         graphMap.put("endPoint", new ArrayList<String>(Arrays.asList("ending")));
 
-        graphMapBackword.put("enterPoint", new ArrayList<String>(Arrays.asList("Beginnering")));
+        graphMapBackword.put("enterPoint", new ArrayList<String>(Arrays.asList("Beginning")));
         graphMapBackword.put("getData1", new ArrayList<String>(Arrays.asList("enterPoint")));
         graphMapBackword.put("getData2", new ArrayList<String>(Arrays.asList("enterPoint")));
         graphMapBackword.put("getData3", new ArrayList<String>(Arrays.asList("enterPoint")));

@@ -48,7 +48,7 @@ public class WorkFlowExecution {
         activityMap = workflowProcess.activityMap;
         variables = workflowProcess.variables;
         partnerLinks = workflowProcess.partnerLinks;
-        ProcessWorkFlow("Beginnering");
+        ProcessWorkFlow("Beginning");
     }
 
     private void ProcessWorkFlow(String graphKey) {
@@ -81,10 +81,10 @@ public class WorkFlowExecution {
         }
 
         if (URLPATH.startsWith("coap")) {
-            PostCoap(URLPATH, inputVariable.data);
+            PostCoap(URLPATH, inputVariable.GetData());
         } else {
 
-            String FullURL = URLPATH + "/" + workFlowInvoke.operation;
+            String FullURL = URLPATH;
             Log.d(TAG, "POST TO server " + FullURL);
 
             // Create a new HttpClient and Post Header
