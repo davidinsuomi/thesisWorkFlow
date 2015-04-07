@@ -139,25 +139,19 @@ public class WorkFlowGenerate {
         }
     }
 
-    public boolean IsOffloadingParalleTask(String startTask, String endTask) {
-        if (graphMap.get(startTask).size() > 1) {
-            return true;
-        } else
-            return false;
-    }
 
-    public StringWriter OffloadingTask(String startTask, String endTask) throws IOException {
-        if (IsOffloadingParalleTask(startTask, endTask)) {
-            return OffloadingParallelTask(startTask, endTask, 30);
-        } else {
-            StringWriter stringWriterSequence =  OffLoadingSequenceTask(startTask, endTask);
-            ModifyBpelMap(startTask,endTask,stringWriterSequence);
-            longInfo(stringWriterSequence.toString());
-            return stringWriterSequence;
-        }
-    }
+//    public StringWriter OffloadingTask(String startTask, String endTask) throws IOException {
+//        if (IsOffloadingParalleTask(startTask, endTask)) {
+//            return OffloadingParallelTask(startTask, endTask, 30);
+//        } else {
+//            StringWriter stringWriterSequence =  OffLoadingSequenceTask(startTask, endTask);
+//            ModifyBpelMap(startTask,endTask,stringWriterSequence);
+//            longInfo(stringWriterSequence.toString());
+//            return stringWriterSequence;
+//        }
+//    }
 
-    private void ModifyBpelMap(String startTask, String endTask,StringWriter writer){
+    public void ModifyBpelMap(String startTask, String endTask,StringWriter writer){
         //Create offloading input variable
         WorkFlowVariable offloadingInput = new WorkFlowVariable("offloadingInput","tns:String");
         WorkFlowVariable offloadingOutput = new WorkFlowVariable("offloadingOutput","tns:String");

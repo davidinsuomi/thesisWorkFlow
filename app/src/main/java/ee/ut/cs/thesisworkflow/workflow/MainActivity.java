@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
         InputStream inputStream = null;
 
         try {
-            inputStream = assetManager.open("bpel03.xml");
+            inputStream = assetManager.open("bpel06.xml");
             if (inputStream != null) {
                 workFlowProcess = workFlowXmlParser.parse(inputStream);
             }
@@ -97,16 +97,16 @@ public class MainActivity extends Activity {
 
     private void TestWorkFlowGenerate() {
         //test workflow offloading
-        //===================
-        WorkFlowGenerate generate = new WorkFlowGenerate(workFlowProcess);
-        StringWriter writer = new StringWriter();
-        try {
-            writer = generate.OffloadingTask("getData2", "postData4");
-        } catch (IllegalArgumentException | IllegalStateException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        longInfo(writer.toString());
+//        //===================
+//        WorkFlowGenerate generate = new WorkFlowGenerate(workFlowProcess);
+//        StringWriter writer = new StringWriter();
+//        try {
+//            writer = generate.OffloadingTask("getData2", "postData4");
+//        } catch (IllegalArgumentException | IllegalStateException | IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        longInfo(writer.toString());
 
     }
 
