@@ -41,8 +41,10 @@ public class WorkFlowExecution {
     private Map<String, WorkFlowActivity> activityMap;
     private ArrayList<WorkFlowVariable> variables;
     private ArrayList<PartnerLink> partnerLinks;
-
+    private WorkFlowProcess workflowProcess;
+    private boolean isOffloading = true;
     public void BeginWorkFlow(WorkFlowProcess workflowProcess) {
+        this.workflowProcess =workflowProcess;
         graphMap = workflowProcess.graphMap;
         graphMapBackword = workflowProcess.graphMapBackword;
         activityMap = workflowProcess.activityMap;
@@ -53,6 +55,15 @@ public class WorkFlowExecution {
 
     private void ProcessWorkFlow(String graphKey) {
         if (!IsLastExecutionInGraph(graphKey) && IsPreviousTaskFinish(graphKey)) {
+            if(isOffloading){
+                WorkFlowGenerate generate = new WorkFlowGenerate(workflowProcess);
+                try {
+                    generate.OffloadingTask("Beginning", "ending");
+                    isOffloading = false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             ArrayList<String> graphValues = graphMap.get(graphKey);
 
             for (int i = 0; i < graphValues.size(); i++) {

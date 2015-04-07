@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         TestWorkFlowExecution();
-        TestWorkFlowGenerate();
+//        TestWorkFlowGenerate();
 
     }
 
@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-//        workFlowExecution.BeginWorkFlow(workFlowProcess);
+        workFlowExecution.BeginWorkFlow(workFlowProcess);
 
     }
 

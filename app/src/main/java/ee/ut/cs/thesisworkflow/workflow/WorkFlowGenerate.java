@@ -167,10 +167,10 @@ public class WorkFlowGenerate {
         variables.add(offloadingOutput);
         //Create Offloading partnerlink
 
-        PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink","tns:PostData","","http://192.168.0.103");
+        PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink","tns:PostData","","http://192.168.0.102:8080");
         partnerLinks.add(offLoadingPartnerLink);
 
-        WorkFlowInvoke invoke = new WorkFlowInvoke("InvokeOffloading",offLoadingPartnerLink.name,"Post",offloadingInput.name,offloadingOutput.name);
+        WorkFlowInvoke invoke = new WorkFlowInvoke("InvokeOffloading",offLoadingPartnerLink.name,"POST",offloadingInput.name,offloadingOutput.name);
         activityMap.put(invoke.name,invoke);
         //update grapmap the next task is new invoke
         ArrayList<String> newArrayList = new ArrayList<>();
