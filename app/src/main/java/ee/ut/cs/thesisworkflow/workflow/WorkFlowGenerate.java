@@ -77,7 +77,7 @@ public class WorkFlowGenerate {
 
     }
 
-    private void FindNewOffloadingVariablesAndPartnerLink(String startTask, String endTask) {
+    private void FindNewOffloadingVariablesAndPartnerLinkSequence(String startTask, String endTask) {
         if (startTask.equals(endTask)) {
             FindCurrentTaskVariableAndPartnerLink(startTask);
         } else {
@@ -90,7 +90,7 @@ public class WorkFlowGenerate {
                     for (int i = 0; i < nextActivities; i++) {
                         startActivityInsideFlow = graphMap.get(startTask).get(i);
                         endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
-                        FindNewOffloadingVariablesAndPartnerLink(startActivityInsideFlow, endFlowActivity);
+                        FindNewOffloadingVariablesAndPartnerLinkSequence(startActivityInsideFlow, endFlowActivity);
                     }
                     startTask = graphMap.get(endFlowActivity).get(0);
                 } else {
@@ -99,6 +99,18 @@ public class WorkFlowGenerate {
             }
         }
     }
+
+    private void FindNewOffloadingVariablesAndPartnerParallel(String startTask, ExternalIP externalIP) {
+        FindCurrentTaskVariableAndPartnerLink(startTask);
+        String endFlowActivity = null;
+        String startActivityInsideFlow = null;
+        for (int i = externalIP.startPosition; i < externalIP.endPosition; i++) {
+            startActivityInsideFlow = graphMap.get(startTask).get(i);
+            endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
+            FindNewOffloadingVariablesAndPartnerLinkSequence(startActivityInsideFlow, endFlowActivity);
+        }
+    }
+
 
     private void FindCurrentTaskVariableAndPartnerLink(String currentTag) {
         WorkFlowActivity activity = activityMap.get(currentTag);
@@ -195,7 +207,7 @@ public class WorkFlowGenerate {
         // offloading sequence task
         startTask = graphMap.get(startTask).get(0);
         endTask = graphMapBackword.get(endTask).get(0);
-        FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+        FindNewOffloadingVariablesAndPartnerLinkSequence(startTask, endTask);
         InitializeXmlSerializer();
         TaskToBeOffloadingSequence(startTask, endTask);
         xmlSerializer.endTag("", "process");
@@ -238,34 +250,67 @@ public class WorkFlowGenerate {
         }
     }
 
-    public StringWriter OffloadingParallelTask(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException {
-
-        // offloading sequence task
-//        startTask = graphMap.get(startTask).get(0);
-        endTask = graphMapBackword.get(endTask).get(0);
-        AddDummyInovekeVariableForParallelTask();
-        FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
-        InitializeXmlSerializer();
-        TaskToBeOffloadingParallel(startTask, endTask, subtasks);
-        xmlSerializer.endTag("", "process");
-        FinalizeXmlSerializer();
-        return writer;
-    }
+//
+//    public StringWriter OffloadingParallelTask(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException {
+//
+//        // offloading sequence task
+////        startTask = graphMap.get(startTask).get(0);
+//        endTask = graphMapBackword.get(endTask).get(0);
+//        AddDummyInovekeVariableForParallelTask();
+//        FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+//        InitializeXmlSerializer();
+//        TaskToBeOffloadingParallel(startTask, endTask, subtasks);
+//        xmlSerializer.endTag("", "process");
+//        FinalizeXmlSerializer();
+//        return writer;
+//    }
 
 
 
     public void  OffloadingParallelTask(String startTask, String endTask, List<ExternalIP> IPs ) throws IOException {
+
+        ArrayList<String> inputVariables = new ArrayList<>();
         for(int i = 0 ; i < IPs.size() ; i ++){
-            endTask = graphMapBackword.get(endTask).get(0);
+            String flowEndTask = graphMapBackword.get(endTask).get(0);
             AddDummyInovekeVariableForParallelTask();
             //TODO need to remove unnecessasry varaiable and partnerLinks
-//            FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+            FindNewOffloadingVariablesAndPartnerParallel(startTask, IPs.get(i));
             InitializeXmlSerializer();
-            TaskToBeOffloadingParallel(startTask, endTask, IPs.get(i));
+            TaskToBeOffloadingParallel(startTask, flowEndTask, IPs.get(i));
             xmlSerializer.endTag("", "process");
             FinalizeXmlSerializer();
-            Log.e(TAG,writer.toString());
+            inputVariables.add(writer.toString());
         }
+
+        ModifyBpelParallel(startTask,endTask,IPs,inputVariables);
+    }
+
+    public void ModifyBpelParallel(String startTask, String endTask, List<ExternalIP> IPs,ArrayList<String> inputVariable){
+        ArrayList<String> invokes = new ArrayList<>();
+        for(int i = 0 ; i < IPs.size() ; i++){
+            WorkFlowVariable offloadingInput = new WorkFlowVariable("offloadingInput" + i,"tns:String");
+            WorkFlowVariable offloadingOutput = new WorkFlowVariable("offloadingOutput" + i,"tns:String");
+            offloadingInput.SetData(inputVariable.get(i));
+
+            variables.add(offloadingInput);
+            variables.add(offloadingOutput);
+
+
+            PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink" + i ,"tns:PostData","",IPs.get(0).IP);
+            partnerLinks.add(offLoadingPartnerLink);
+
+
+            WorkFlowInvoke invoke = new WorkFlowInvoke("InvokeOffloading" + i ,offLoadingPartnerLink.name,"POST",offloadingInput.name,offloadingOutput.name);
+            activityMap.put(invoke.name,invoke);
+            invokes.add(invoke.name);
+            // next activity joint activity
+            ArrayList<String> jointActivity = new ArrayList<>();
+            jointActivity.add(endTask);
+            graphMap.put(invoke.name,jointActivity);
+        }
+
+        graphMap.put(startTask,invokes);
+        graphMapBackword.put(endTask,invokes);
     }
 
     private void AddDummyInovekeVariableForParallelTask() {
@@ -275,23 +320,23 @@ public class WorkFlowGenerate {
         offloadingVariables.put("dummyAssign2", dummyAssign2);
     }
 
-    //So far only to able to offloading sequenceTask
-    public void TaskToBeOffloadingParallel(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException {
-        xmlSerializer.startTag("", "sequence");
-        //TODO Need to change first task to empty
-        CreateStartingBpelActivity();
-        String endFlowActivity = null;
-        String startActivityInsideFlow = null;
-        xmlSerializer.startTag("", "flow");
-        for (int i = 0; i < subtasks; i++) {
-            startActivityInsideFlow = graphMap.get(startTask).get(i);
-            endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
-            TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
-
-        }
-        xmlSerializer.endTag("", "flow");
-        xmlSerializer.endTag("", "sequence");
-    }
+//    //So far only to able to offloading sequenceTask
+//    public void TaskToBeOffloadingParallel(String startTask, String endTask, int subtasks) throws IllegalArgumentException, IllegalStateException, IOException {
+//        xmlSerializer.startTag("", "sequence");
+//        //TODO Need to change first task to empty
+//        CreateStartingBpelActivity();
+//        String endFlowActivity = null;
+//        String startActivityInsideFlow = null;
+//        xmlSerializer.startTag("", "flow");
+//        for (int i = 0; i < subtasks; i++) {
+//            startActivityInsideFlow = graphMap.get(startTask).get(i);
+//            endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
+//            TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
+//
+//        }
+//        xmlSerializer.endTag("", "flow");
+//        xmlSerializer.endTag("", "sequence");
+//    }
 
     public void TaskToBeOffloadingParallel(String startTask, String endTask, ExternalIP externalIP) throws IllegalArgumentException, IllegalStateException, IOException {
         xmlSerializer.startTag("", "sequence");

@@ -63,7 +63,9 @@ public class WorkFlowDecisionMaker {
             Log.e(TAG,"end task "  +FindFlowJointActivty(decisionPoint) );
 
             try {
-                generate.OffloadingParallelTask(decisionPoint,FindFlowJointActivty(decisionPoint),Conf.IPs);
+                if(GetParalleSubTasks(decisionPoint) >9) {
+                    generate.OffloadingParallelTask(decisionPoint, FindFlowJointActivty(decisionPoint), Conf.IPs);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -94,5 +96,9 @@ public class WorkFlowDecisionMaker {
             return true;
         } else
             return false;
+    }
+
+    private int GetParalleSubTasks(String activityName) {
+        return graphMap.get(activityName).size();
     }
 }
