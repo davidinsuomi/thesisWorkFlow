@@ -37,7 +37,7 @@ public class WorkFlowDecisionMaker {
     }
 
 
-    public void MakeDecision(String decisionPoint){
+    public void MakeDecision(String decisionPoint)  {
         if(IsOffloadingParalleTask(decisionPoint)){
             int totalWeight= 0;
             for(int i = 0 ; i < Conf.IPs.size() ; i ++){
@@ -46,8 +46,28 @@ public class WorkFlowDecisionMaker {
             Log.e(TAG,"total weight"  + totalWeight);
 
             int partitionSize = graphMap.get(decisionPoint).size();
+            Log.e(TAG,"partition size"  + partitionSize);
+            int position = 0;
+            for(int i =0; i < Conf.IPs.size() ; i ++){
+                Conf.IPs.get(i).startPosition = position;
+                Log.e(TAG,"element " + i + "start : "   + position);
+                position = position + (Conf.IPs.get(i).weight * partitionSize) / totalWeight;
+                if(i == Conf.IPs.size() -1){
+                    Conf.IPs.get(i).endPosition = partitionSize;
+                }else {
+                    Conf.IPs.get(i).endPosition =  position;
+                }
+                Log.e(TAG,"element " + i + "end : "   + Conf.IPs.get(i).endPosition);
+            }
+            Log.e(TAG,"start task "  + decisionPoint);
+            Log.e(TAG,"end task "  +FindFlowJointActivty(decisionPoint) );
 
-            
+            try {
+                generate.OffloadingParallelTask(decisionPoint,FindFlowJointActivty(decisionPoint),Conf.IPs);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }else{
             //TODO IS SEQUENCE TASK NOT OFF LOADING, THE COMMENT CODE IS HOW TO OFFLOADING SEQUENCE TASK
 //            StringWriter stringWriterSequence = null;
@@ -60,6 +80,14 @@ public class WorkFlowDecisionMaker {
         }
     }
 
+    private String FindFlowJointActivty(String activityName) {
+        String previousActivity = null;
+        while (graphMapBackword.get(activityName).size() == 1) {
+            previousActivity = activityName;
+            activityName = graphMap.get(activityName).get(0);
+        }
+        return activityName;
+    }
 
     private boolean IsOffloadingParalleTask(String activityName) {
         if (graphMap.get(activityName).size() > 1) {

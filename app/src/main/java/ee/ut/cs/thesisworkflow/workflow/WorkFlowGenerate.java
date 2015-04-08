@@ -14,8 +14,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import ee.ut.cs.thesisworkflow.Data.ExternalIP;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowAssign;
@@ -24,7 +26,7 @@ import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
 import ee.ut.cs.thesisworkflow.object.WorkFlowVariable;
 
 public class WorkFlowGenerate {
-    private static StringWriter writer = new StringWriter();
+    private static StringWriter writer;
     private static String TAG = "GENERATEXML";
     private Map<String, ArrayList<String>> graphMap;
     private Map<String, ArrayList<String>> graphMapBackword;
@@ -46,6 +48,7 @@ public class WorkFlowGenerate {
 
 
     private void InitializeXmlSerializer() throws IllegalArgumentException, IllegalStateException, IOException {
+        writer = new StringWriter();
         xmlSerializer.setOutput(writer);
         //Start Document
         xmlSerializer.startDocument("UTF-8", true);
@@ -71,7 +74,6 @@ public class WorkFlowGenerate {
 
     private void FinalizeXmlSerializer() throws IllegalArgumentException, IllegalStateException, IOException {
         xmlSerializer.endDocument();
-        Log.e(TAG, writer.toString());
 
     }
 
@@ -250,6 +252,22 @@ public class WorkFlowGenerate {
         return writer;
     }
 
+
+
+    public void  OffloadingParallelTask(String startTask, String endTask, List<ExternalIP> IPs ) throws IOException {
+        for(int i = 0 ; i < IPs.size() ; i ++){
+            endTask = graphMapBackword.get(endTask).get(0);
+            AddDummyInovekeVariableForParallelTask();
+            //TODO need to remove unnecessasry varaiable and partnerLinks
+//            FindNewOffloadingVariablesAndPartnerLink(startTask, endTask);
+            InitializeXmlSerializer();
+            TaskToBeOffloadingParallel(startTask, endTask, IPs.get(i));
+            xmlSerializer.endTag("", "process");
+            FinalizeXmlSerializer();
+            Log.e(TAG,writer.toString());
+        }
+    }
+
     private void AddDummyInovekeVariableForParallelTask() {
         WorkFlowVariable dummyAssign1 = new WorkFlowVariable("dummyAssign1", "tns:String");
         WorkFlowVariable dummyAssign2 = new WorkFlowVariable("dummyAssign2", "tns:String");
@@ -270,6 +288,21 @@ public class WorkFlowGenerate {
             endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
             TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
 
+        }
+        xmlSerializer.endTag("", "flow");
+        xmlSerializer.endTag("", "sequence");
+    }
+
+    public void TaskToBeOffloadingParallel(String startTask, String endTask, ExternalIP externalIP) throws IllegalArgumentException, IllegalStateException, IOException {
+        xmlSerializer.startTag("", "sequence");
+        CreateStartingBpelActivity();
+        String endFlowActivity = null;
+        String startActivityInsideFlow = null;
+        xmlSerializer.startTag("", "flow");
+        for (int i = externalIP.startPosition; i < externalIP.endPosition; i++) {
+            startActivityInsideFlow = graphMap.get(startTask).get(i);
+            endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
+            TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
         }
         xmlSerializer.endTag("", "flow");
         xmlSerializer.endTag("", "sequence");
