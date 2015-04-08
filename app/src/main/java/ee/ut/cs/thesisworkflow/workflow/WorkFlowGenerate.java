@@ -279,6 +279,7 @@ public class WorkFlowGenerate {
             TaskToBeOffloadingParallel(startTask, flowEndTask, IPs.get(i));
             xmlSerializer.endTag("", "process");
             FinalizeXmlSerializer();
+            longInfo(writer.toString());
             inputVariables.add(writer.toString());
         }
 
@@ -315,7 +316,9 @@ public class WorkFlowGenerate {
 
     private void AddDummyInovekeVariableForParallelTask() {
         WorkFlowVariable dummyAssign1 = new WorkFlowVariable("dummyAssign1", "tns:String");
+        dummyAssign1.SetData("dummy value");
         WorkFlowVariable dummyAssign2 = new WorkFlowVariable("dummyAssign2", "tns:String");
+        dummyAssign2.SetData("dummy value");
         offloadingVariables.put("dummyAssign1", dummyAssign1);
         offloadingVariables.put("dummyAssign2", dummyAssign2);
     }
