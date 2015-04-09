@@ -37,40 +37,40 @@ public class WorkFlowDecisionMaker {
     }
 
 
-    public void MakeDecision(String decisionPoint)  {
-        if(IsOffloadingParalleTask(decisionPoint)){
-            int totalWeight= 0;
-            for(int i = 0 ; i < Conf.IPs.size() ; i ++){
+    public void MakeDecision(String decisionPoint) {
+        if (IsOffloadingParalleTask(decisionPoint)) {
+            int totalWeight = 0;
+            for (int i = 0; i < Conf.IPs.size(); i++) {
                 totalWeight += Conf.IPs.get(i).weight;
             }
-            Log.e(TAG,"total weight"  + totalWeight);
+            Log.e(TAG, "total weight" + totalWeight);
 
             int partitionSize = graphMap.get(decisionPoint).size();
-            Log.e(TAG,"partition size"  + partitionSize);
+            Log.e(TAG, "partition size" + partitionSize);
             int position = 0;
-            for(int i =0; i < Conf.IPs.size() ; i ++){
+            for (int i = 0; i < Conf.IPs.size(); i++) {
                 Conf.IPs.get(i).startPosition = position;
-                Log.e(TAG,"element " + i + "start : "   + position);
+                Log.e(TAG, "element " + i + "start : " + position);
                 position = position + (Conf.IPs.get(i).weight * partitionSize) / totalWeight;
-                if(i == Conf.IPs.size() -1){
+                if (i == Conf.IPs.size() - 1) {
                     Conf.IPs.get(i).endPosition = partitionSize;
-                }else {
-                    Conf.IPs.get(i).endPosition =  position;
+                } else {
+                    Conf.IPs.get(i).endPosition = position;
                 }
-                Log.e(TAG,"element " + i + "end : "   + Conf.IPs.get(i).endPosition);
+                Log.e(TAG, "element " + i + "end : " + Conf.IPs.get(i).endPosition);
             }
-            Log.e(TAG,"start task "  + decisionPoint);
-            Log.e(TAG,"end task "  +FindFlowJointActivty(decisionPoint) );
+            Log.e(TAG, "start task " + decisionPoint);
+            Log.e(TAG, "end task " + FindFlowJointActivty(decisionPoint));
 
             try {
-                if(GetParalleSubTasks(decisionPoint) >9) {
+                if (GetParalleSubTasks(decisionPoint) > 9) {
                     generate.OffloadingParallelTask(decisionPoint, FindFlowJointActivty(decisionPoint), Conf.IPs);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        }else{
+        } else {
             //TODO IS SEQUENCE TASK NOT OFF LOADING, THE COMMENT CODE IS HOW TO OFFLOADING SEQUENCE TASK
 //            StringWriter stringWriterSequence = null;
 //            try {
