@@ -181,17 +181,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    class CoapConnectionTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            //testing the coap
-            CoapConnection coapConnection = new CoapConnection("DISCOVER", "coap://localhost", null);
-            coapConnection.Connect();
-            return null;
-        }
-    }
+//    class CoapConnectionTask extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//            //testing the coap
+//            CoapConnection coapConnection = new CoapConnection("DISCOVER", "coap://localhost", null);
+//            coapConnection.Connect();
+//            return null;
+//        }
+//    }
 
     // Bluetooth part
     private class ConnectThread extends Thread {
