@@ -25,7 +25,6 @@ public class BpelHttpServer extends NanoHTTPD {
     public BpelHttpServer(){
         super(8080);
     }
-
     @Override public Response serve(IHTTPSession session) {
         Method method = session.getMethod();
         String uri = session.getUri();

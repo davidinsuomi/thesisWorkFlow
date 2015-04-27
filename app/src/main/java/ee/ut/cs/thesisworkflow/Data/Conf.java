@@ -2,9 +2,7 @@ package ee.ut.cs.thesisworkflow.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by weiding on 07/04/15.

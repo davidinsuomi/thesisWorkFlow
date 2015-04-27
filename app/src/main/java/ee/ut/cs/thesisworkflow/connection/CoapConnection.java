@@ -3,11 +3,22 @@ package ee.ut.cs.thesisworkflow.connection;
 /**
  * Created by weiding on 28/03/15.
  */
+
 import android.util.Log;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import coap.DELETERequest;
+import coap.GETRequest;
+import coap.MediaTypeRegistry;
+import coap.POSTRequest;
+import coap.PUTRequest;
+import coap.RemoteResource;
+import coap.Request;
+import coap.Resource;
+import coap.Response;
 
 /*
  * This class implements a simple CoAP client for testing purposes.
@@ -24,8 +35,6 @@ import java.net.URISyntaxException;
  *   SampleClient POST coap://someServer.org:61616 my data
  *
  */
-
-import coap.*;
 
 public class CoapConnection {
     public static final String DISCOVERY_RESOURCE = "/.well-known/core";

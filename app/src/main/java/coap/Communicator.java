@@ -3,11 +3,11 @@ package coap;
 import java.io.IOException;
 import java.net.SocketException;
 
-import layers.TransferLayer;
-import layers.UpperLayer;
 import layers.MessageLayer;
 import layers.TransactionLayer;
+import layers.TransferLayer;
 import layers.UDPLayer;
+import layers.UpperLayer;
 
 public class Communicator extends UpperLayer {
 

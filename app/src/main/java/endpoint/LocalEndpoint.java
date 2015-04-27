@@ -5,7 +5,18 @@ import java.io.PrintStream;
 import java.net.SocketException;
 import java.util.List;
 
-import coap.*;
+import coap.CodeRegistry;
+import coap.Communicator;
+import coap.DiscoveryResource;
+import coap.GETRequest;
+import coap.LocalResource;
+import coap.Option;
+import coap.OptionNumberRegistry;
+import coap.PUTRequest;
+import coap.ReadOnlyResource;
+import coap.Request;
+import coap.Resource;
+import coap.Response;
 
 public class LocalEndpoint extends Endpoint {
 	

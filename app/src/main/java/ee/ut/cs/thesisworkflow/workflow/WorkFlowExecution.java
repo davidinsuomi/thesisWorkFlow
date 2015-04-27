@@ -14,14 +14,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Map;
 
-import coap.*;
-
-
+import coap.GETRequest;
+import coap.MediaTypeRegistry;
+import coap.POSTRequest;
+import coap.RemoteResource;
+import coap.Request;
+import coap.Resource;
+import coap.Response;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowAssign;
@@ -56,11 +60,8 @@ public class WorkFlowExecution {
     private void ProcessWorkFlow(String graphKey) {
         if (!IsLastExecutionInGraph(graphKey) && IsPreviousTaskFinish(graphKey)) {
             decisionMaker.MakeDecision(graphKey);
-
             ArrayList<String> graphValues = graphMap.get(graphKey);
             for (int i = 0; i < graphValues.size(); i++) {
-
-                //sequence task
                 ExecutionTask task = new ExecutionTask(graphValues.get(i));
                 task.start();
             }
@@ -339,10 +340,8 @@ public class WorkFlowExecution {
                     try {
                         FetchFromServer(workFlowInvoke);
                     } catch (ClientProtocolException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -360,6 +359,5 @@ public class WorkFlowExecution {
                 t.start();
             }
         }
-
     }
 }

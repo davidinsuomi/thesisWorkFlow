@@ -22,7 +22,7 @@ import ee.ut.cs.thesisworkflow.object.WorkFlowInvoke;
 import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
 import ee.ut.cs.thesisworkflow.object.WorkFlowVariable;
 
-import static android.util.Log.*;
+import static android.util.Log.d;
 
 
 public class WorkFlowXmlParser {
@@ -75,7 +75,7 @@ public class WorkFlowXmlParser {
         }
         addMissingFlowTags();
         addMissingEndFlag();
-        addRepestTask();
+        addRepeatTask();
         parsingGraphMapBackword();
         workFlowProcess.activityMap = activityMap;
         workFlowProcess.graphMap = graphMap;
@@ -86,7 +86,7 @@ public class WorkFlowXmlParser {
     }
 
 
-    private void addRepestTask() {
+    private void addRepeatTask() {
         for (ForeachRepeatTask task : repeatTasks) {
             createForEachParalleTask(task);
         }

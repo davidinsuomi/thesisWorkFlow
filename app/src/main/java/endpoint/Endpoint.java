@@ -2,7 +2,12 @@ package endpoint;
 
 import java.io.IOException;
 
-import coap.*;
+import coap.Communicator;
+import coap.Message;
+import coap.MessageHandler;
+import coap.MessageReceiver;
+import coap.Request;
+import coap.Resource;
 
 public abstract class Endpoint implements MessageReceiver, MessageHandler {
 

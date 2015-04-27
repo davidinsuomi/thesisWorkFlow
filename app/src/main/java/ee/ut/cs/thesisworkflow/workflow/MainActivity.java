@@ -11,9 +11,7 @@ import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -24,12 +22,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-import ee.ut.cs.thesisworkflow.connection.CoapConnection;
 import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
 
 public class MainActivity extends Activity {

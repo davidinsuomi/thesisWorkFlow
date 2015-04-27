@@ -14,6 +14,4 @@ public class WorkFlowProcess {
     public Map<String,ArrayList<String>> graphMap = new HashMap<String,ArrayList<String>>();
     public Map<String,ArrayList<String>> graphMapBackword = new HashMap<String,ArrayList<String>>();
     public Map<String,WorkFlowActivity> activityMap = new HashMap<String,WorkFlowActivity>();
-    public String FirstActivity;
-    public String lastActivity;
 }
