@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
+import ee.ut.cs.thesisworkflow.Server.BpelFuzzyLogicServer;
 import ee.ut.cs.thesisworkflow.Server.BpelHttpServer;
 
 /**
@@ -16,10 +17,16 @@ public class BpelServiceActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BpelHttpServer server = new BpelHttpServer();
+        BpelFuzzyLogicServer fuzzyServer = new BpelFuzzyLogicServer();
 
         try {
             server.start();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try{
+            fuzzyServer.start();
+        }catch (IOException e) {
             e.printStackTrace();
         }
     }

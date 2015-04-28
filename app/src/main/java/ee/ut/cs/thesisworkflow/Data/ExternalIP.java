@@ -8,8 +8,10 @@ public class ExternalIP {
     public int weight;
     public int startPosition;
     public int endPosition;
-    public ExternalIP(String IP, int weight){
+    public int CPU;
+    public int RAM;
+    public int Battery;
+    public ExternalIP(String IP){
         this.IP = IP;
-        this.weight = weight;
     }
 }

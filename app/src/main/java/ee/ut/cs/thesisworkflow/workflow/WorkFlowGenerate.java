@@ -297,7 +297,7 @@ public class WorkFlowGenerate {
             variables.add(offloadingOutput);
 
 
-            PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink" + i ,"tns:PostData","",IPs.get(0).IP);
+            PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink" + i ,"tns:PostData","",IPs.get(0).IP +":8080");
             partnerLinks.add(offLoadingPartnerLink);
 
 

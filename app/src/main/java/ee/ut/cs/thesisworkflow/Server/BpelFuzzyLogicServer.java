@@ -1,5 +1,8 @@
-package ee.ut.cs.thesisworkflow.workflow;
+package ee.ut.cs.thesisworkflow.Server;
 
+/**
+ * Created by weiding on 27/04/15.
+ */
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -12,96 +15,48 @@ import net.sourceforge.jFuzzyLogic.FIS;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Map;
 
-import ee.ut.cs.thesisworkflow.Data.Conf;
-import ee.ut.cs.thesisworkflow.object.PartnerLink;
-import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
-import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
-import ee.ut.cs.thesisworkflow.object.WorkFlowVariable;
+import NanoHTTPD.NanoHTTPD;
+import ee.ut.cs.thesisworkflow.workflow.MyApplication;
 
-/**
- * Created by weiding on 07/04/15.
- */
-public class WorkFlowDecisionMaker {
-
-    private Map<String, ArrayList<String>> graphMap;
-    private Map<String, ArrayList<String>> graphMapBackword;
-    private Map<String, WorkFlowActivity> activityMap;
-    private ArrayList<WorkFlowVariable> variables;
-    private ArrayList<PartnerLink> partnerLinks;
-    private WorkFlowGenerate generate;
-    private static final String TAG = "WorkFlowDecisionMaker";
-    private WorkFlowCollaborate workFlowCollaborate;
+public class BpelFuzzyLogicServer extends NanoHTTPD {
+    private static String TAG = "BpelFuzzyLogicServer";
+    private float CPUSpec =  2500f;
     InputStream inputStream;
     FIS fis;
+    int availableRAM;
+    int availableCPU;
+    int availableBattery;
 
-    public WorkFlowDecisionMaker(WorkFlowProcess workflowProcess) {
-        graphMap = workflowProcess.graphMap;
-        graphMapBackword = workflowProcess.graphMapBackword;
-        activityMap = workflowProcess.activityMap;
-        variables = workflowProcess.variables;
-        partnerLinks = workflowProcess.partnerLinks;
-        generate = new WorkFlowGenerate(workflowProcess);
+
+    public BpelFuzzyLogicServer(){
+        super(8081);
         try {
             inputStream = MyApplication.getAppContext().getResources().getAssets().open("offloading.fcl");
         } catch (IOException e) {
             e.printStackTrace();
         }
         fis = FIS.load(inputStream, true);
-        workFlowCollaborate = new WorkFlowCollaborate();
     }
 
+    @Override
+    public Response serve(IHTTPSession session) {
+        Method method = session.getMethod();
+        String uri = session.getUri();
+        Log.e(TAG, "URI:" + uri);
 
-    public void MakeDecision(String decisionPoint) {
-        //TODO just for testing need to delete it afterwards
-        workFlowCollaborate.GetCollaborateDevicesStatus();
-        if (IsOffloadingParalleTask(decisionPoint)) {
-            if (IsOffloading()) {
-                int totalWeight = 0;
-                for (int i = 0; i < Conf.IPs.size(); i++) {
-                    totalWeight += Conf.IPs.get(i).weight;
-                }
-                Log.e(TAG, "total weight" + totalWeight);
-
-                int partitionSize = graphMap.get(decisionPoint).size();
-                Log.e(TAG, "partition size" + partitionSize);
-                int position = 0;
-                for (int i = 0; i < Conf.IPs.size(); i++) {
-                    Conf.IPs.get(i).startPosition = position;
-                    Log.e(TAG, "element " + i + "start : " + position);
-                    position = position + (Conf.IPs.get(i).weight * partitionSize) / totalWeight;
-                    if (i == Conf.IPs.size() - 1) {
-                        Conf.IPs.get(i).endPosition = partitionSize;
-                    } else {
-                        Conf.IPs.get(i).endPosition = position;
-                    }
-                    Log.e(TAG, "element " + i + "end : " + Conf.IPs.get(i).endPosition);
-                }
-                Log.e(TAG, "start task " + decisionPoint);
-                Log.e(TAG, "end task " + FindFlowJointActivty(decisionPoint));
-
-                try {
-                    if (GetParalleSubTasks(decisionPoint) > 9) {
-                        Log.e(TAG, "OFFLOADING");
-                        generate.OffloadingParallelTask(decisionPoint, FindFlowJointActivty(decisionPoint), Conf.IPs);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        String msg= "";
+        if(method.toString().equals("GET")) {
+            if(IsOffloading()){
+                msg = "0";
             }
-
-        } else {
-            //TODO IS SEQUENCE TASK NOT OFF LOADING, THE COMMENT CODE IS HOW TO OFFLOADING SEQUENCE TASK
-//            StringWriter stringWriterSequence = null;
-//            try {
-//                stringWriterSequence = generate.OffLoadingSequenceTask(decisionPoint, "ending");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            generate.ModifyBpelMap(decisionPoint, "ending", stringWriterSequence);
+            else{
+                msg = availableRAM + "," + availableBattery + "," + availableCPU;
+            }
+            Log.e(TAG,"response: " + msg);
         }
+
+        return new Response(msg);
     }
 
     private boolean IsOffloading() {
@@ -125,10 +80,12 @@ public class WorkFlowDecisionMaker {
     }
 
 
+
     private int getBatteryUsage() {
-        float percentage = (readBatteryStatus() * 100);
+        float percentage = (readBatteryStatus());
         Log.e(TAG, "read battery usage" + (int) percentage);
-        return (int) percentage;
+        availableBattery = (int) (percentage * readBatteryCapacity());
+        return (int) (percentage * 100);
     }
 
     private int getMemoryUsage() {
@@ -138,15 +95,17 @@ public class WorkFlowDecisionMaker {
     }
 
     private int getCPUUsage() {
-        float percentage = (readCPUStatus() * 100);
+        float percentage = (readCPUStatus());
         Log.e(TAG, "read CPU usage" + (int) percentage);
-        return (int) percentage;
+        availableCPU = (int) (CPUSpec * percentage);
+        return (int) (percentage * 100);
     }
 
     private float readMemoryStatus() {
         ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
         ActivityManager activityManager = (ActivityManager) MyApplication.getAppContext().getSystemService(MyApplication.getAppContext().ACTIVITY_SERVICE);
         activityManager.getMemoryInfo(mi);
+        availableRAM = (int) (mi.availMem / 1048576L);
         return (float) (mi.totalMem - mi.availMem) / mi.totalMem;
     }
 
@@ -188,7 +147,7 @@ public class WorkFlowDecisionMaker {
         double batteryCapacity = 0;
         try {
             mPowerProfile_ = Class.forName(POWER_PROFILE_CLASS)
-                    .getConstructor(Context.class).newInstance(this);
+                    .getConstructor(Context.class).newInstance(MyApplication.getAppContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -238,25 +197,5 @@ public class WorkFlowDecisionMaker {
             ex.printStackTrace();
         }
         return 0;
-    }
-
-    private String FindFlowJointActivty(String activityName) {
-        String previousActivity = null;
-        while (graphMapBackword.get(activityName).size() == 1) {
-            previousActivity = activityName;
-            activityName = graphMap.get(activityName).get(0);
-        }
-        return activityName;
-    }
-
-    private boolean IsOffloadingParalleTask(String activityName) {
-        if (graphMap.get(activityName).size() > 1) {
-            return true;
-        } else
-            return false;
-    }
-
-    private int GetParalleSubTasks(String activityName) {
-        return graphMap.get(activityName).size();
     }
 }
