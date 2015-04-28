@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ee.ut.cs.thesisworkflow.Data.ExternalIP;
+import ee.ut.cs.thesisworkflow.Data.CollaborateDevice;
 import ee.ut.cs.thesisworkflow.object.PartnerLink;
 import ee.ut.cs.thesisworkflow.object.WorkFlowActivity;
 import ee.ut.cs.thesisworkflow.object.WorkFlowAssign;
@@ -100,11 +100,11 @@ public class WorkFlowGenerate {
         }
     }
 
-    private void FindNewOffloadingVariablesAndPartnerParallel(String startTask, ExternalIP externalIP) {
+    private void FindNewOffloadingVariablesAndPartnerParallel(String startTask, CollaborateDevice collaborateDevice) {
         FindCurrentTaskVariableAndPartnerLink(startTask);
         String endFlowActivity = null;
         String startActivityInsideFlow = null;
-        for (int i = externalIP.startPosition; i < externalIP.endPosition; i++) {
+        for (int i = collaborateDevice.startPosition; i < collaborateDevice.endPosition; i++) {
             startActivityInsideFlow = graphMap.get(startTask).get(i);
             endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
             FindNewOffloadingVariablesAndPartnerLinkSequence(startActivityInsideFlow, endFlowActivity);
@@ -267,7 +267,7 @@ public class WorkFlowGenerate {
 
 
 
-    public void  OffloadingParallelTask(String startTask, String endTask, List<ExternalIP> IPs ) throws IOException {
+    public void  OffloadingParallelTask(String startTask, String endTask, List<CollaborateDevice> IPs ) throws IOException {
 
         ArrayList<String> inputVariables = new ArrayList<>();
         for(int i = 0 ; i < IPs.size() ; i ++){
@@ -286,7 +286,7 @@ public class WorkFlowGenerate {
         ModifyBpelParallel(startTask,endTask,IPs,inputVariables);
     }
 
-    public void ModifyBpelParallel(String startTask, String endTask, List<ExternalIP> IPs,ArrayList<String> inputVariable){
+    public void ModifyBpelParallel(String startTask, String endTask, List<CollaborateDevice> IPs,ArrayList<String> inputVariable){
         ArrayList<String> invokes = new ArrayList<>();
         for(int i = 0 ; i < IPs.size() ; i++){
             WorkFlowVariable offloadingInput = new WorkFlowVariable("offloadingInput" + i,"tns:String");
@@ -341,13 +341,13 @@ public class WorkFlowGenerate {
 //        xmlSerializer.endTag("", "sequence");
 //    }
 
-    public void TaskToBeOffloadingParallel(String startTask, String endTask, ExternalIP externalIP) throws IllegalArgumentException, IllegalStateException, IOException {
+    public void TaskToBeOffloadingParallel(String startTask, String endTask, CollaborateDevice collaborateDevice) throws IllegalArgumentException, IllegalStateException, IOException {
         xmlSerializer.startTag("", "sequence");
         CreateStartingBpelActivity();
         String endFlowActivity = null;
         String startActivityInsideFlow = null;
         xmlSerializer.startTag("", "flow");
-        for (int i = externalIP.startPosition; i < externalIP.endPosition; i++) {
+        for (int i = collaborateDevice.startPosition; i < collaborateDevice.endPosition; i++) {
             startActivityInsideFlow = graphMap.get(startTask).get(i);
             endFlowActivity = FindFlowEndActivty(startActivityInsideFlow);
             TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);

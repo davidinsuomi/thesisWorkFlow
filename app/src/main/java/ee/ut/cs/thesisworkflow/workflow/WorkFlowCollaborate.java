@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import ee.ut.cs.thesisworkflow.Data.CollaborateDevice;
 import ee.ut.cs.thesisworkflow.Data.Conf;
-import ee.ut.cs.thesisworkflow.Data.ExternalIP;
 
 /**
  * Created by weiding on 27/04/15.
@@ -45,7 +45,7 @@ public class WorkFlowCollaborate {
 
                     List<String> items = Arrays.asList(response.split("\\s*,\\s*"));
                     if(items.size() > 1){
-                        ExternalIP device = new ExternalIP(Conf.CollaborateDeviceIPs.get(i));
+                        CollaborateDevice device = new CollaborateDevice(Conf.CollaborateDeviceIPs.get(i));
                         device.RAM = Integer.parseInt(items.get(0));
                         device.Battery = Integer.parseInt(items.get(1));
                         device.CPU = Integer.parseInt(items.get(2));
@@ -75,7 +75,7 @@ public class WorkFlowCollaborate {
         Conf.IPs.clear();
     }
     private void WeightNormalize(){
-        for(ExternalIP device : Conf.IPs){
+        for(CollaborateDevice device : Conf.IPs){
             float normalizeCPU = (float) device.CPU / (float) totalCPU;
             float normalizeBattery = (float) device.Battery / (float) totalBattery;
             float normalizeRAM = (float) device.RAM / (float) totalRAM;
