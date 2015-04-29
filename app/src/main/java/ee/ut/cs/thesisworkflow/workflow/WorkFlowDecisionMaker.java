@@ -113,8 +113,8 @@ public class WorkFlowDecisionMaker {
         fis.setVariable("CPU", getCPUUsage());
         fis.setVariable("BATTERY", getBatteryUsage());
         fis.setVariable("RAM", getMemoryUsage());
+        fis.setVariable("BANDWIDTH", getBandwidthUsage());
         fis.evaluate();
-
         Log.e(TAG, "" + fis.getVariable("decision").getLatestDefuzzifiedValue());
         defuzzifiedValue = fis.getVariable("decision").getLatestDefuzzifiedValue();
         if (defuzzifiedValue > 10) {
@@ -148,6 +148,10 @@ public class WorkFlowDecisionMaker {
         ActivityManager activityManager = (ActivityManager) MyApplication.getAppContext().getSystemService(MyApplication.getAppContext().ACTIVITY_SERVICE);
         activityManager.getMemoryInfo(mi);
         return (float) (mi.totalMem - mi.availMem) / mi.totalMem;
+    }
+
+    private float getBandwidthUsage(){
+        return 3;
     }
 
     private float readBatteryStatus() {

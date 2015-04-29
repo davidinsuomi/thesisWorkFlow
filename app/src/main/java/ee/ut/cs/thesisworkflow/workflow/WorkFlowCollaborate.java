@@ -24,6 +24,7 @@ public class WorkFlowCollaborate {
     int totalCPU;
     int totalBattery;
     int totalRAM;
+    int totalBandwidth;
 
     public void GetCollaborateDevicesStatus(){
         ResetValue();
@@ -48,9 +49,11 @@ public class WorkFlowCollaborate {
                         device.RAM = Integer.parseInt(items.get(0));
                         device.Battery = Integer.parseInt(items.get(1));
                         device.CPU = Integer.parseInt(items.get(2));
+                        device.Bandwidth = Integer.parseInt(items.get(3));
                         totalRAM += device.RAM;
                         totalBattery += device.Battery;
                         totalCPU += device.CPU;
+                        totalBandwidth += device.Bandwidth;
                         Conf.AvailableDevices.add(device);
                     }
                 }
@@ -77,7 +80,8 @@ public class WorkFlowCollaborate {
             float normalizeCPU = (float) device.CPU / (float) totalCPU;
             float normalizeBattery = (float) device.Battery / (float) totalBattery;
             float normalizeRAM = (float) device.RAM / (float) totalRAM;
-            float weight = normalizeCPU + normalizeBattery + normalizeRAM;
+            float normalizeBandwidth = (float) device.Bandwidth / (float) totalBandwidth;
+            float weight = normalizeCPU + normalizeBattery + normalizeRAM + normalizeBandwidth;
             device.weight = (int) (weight * 100);
         }
     }

@@ -27,6 +27,7 @@ public class BpelFuzzyLogicServer extends NanoHTTPD {
     int availableRAM;
     int availableCPU;
     int availableBattery;
+    int availableBandwidth =3;
 
 
     public BpelFuzzyLogicServer(){
@@ -51,7 +52,7 @@ public class BpelFuzzyLogicServer extends NanoHTTPD {
                 msg = "0";
             }
             else{
-                msg = availableRAM + "," + availableBattery + "," + availableCPU;
+                msg = availableRAM + "," + availableBattery + "," + availableCPU + "," + availableBandwidth;
             }
             Log.e(TAG,"response: " + msg);
         }

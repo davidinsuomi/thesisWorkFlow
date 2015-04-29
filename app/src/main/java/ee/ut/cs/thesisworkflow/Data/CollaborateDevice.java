@@ -11,6 +11,7 @@ public class CollaborateDevice {
     public int CPU;
     public int RAM;
     public int Battery;
+    public int Bandwidth;
     public CollaborateDevice(String IP){
         this.IP = IP;
     }
