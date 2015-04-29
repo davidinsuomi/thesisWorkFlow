@@ -30,30 +30,28 @@ public class WorkFlowCollaborate {
         new fetchingStatusService().execute();
     }
     private class fetchingStatusService extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected Void doInBackground(Void... params) {
             // TODO Auto-generated method stub
             try {
-                for(int i = 0 ; i < Conf.CollaborateDeviceIPs.size() ; i++){
+                for(int i = 0 ; i < Conf.CollaborateDevices.size() ; i++){
                     String response = "";
                     try {
-                        response = fetchHttp(Conf.CollaborateDeviceIPs.get(i)+":8081");
+                        response = fetchHttp(Conf.CollaborateDevices.get(i)+":8081");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                     List<String> items = Arrays.asList(response.split("\\s*,\\s*"));
                     if(items.size() > 1){
-                        CollaborateDevice device = new CollaborateDevice(Conf.CollaborateDeviceIPs.get(i));
+                        CollaborateDevice device = new CollaborateDevice(Conf.CollaborateDevices.get(i));
                         device.RAM = Integer.parseInt(items.get(0));
                         device.Battery = Integer.parseInt(items.get(1));
                         device.CPU = Integer.parseInt(items.get(2));
                         totalRAM += device.RAM;
                         totalBattery += device.Battery;
                         totalCPU += device.CPU;
-                        Conf.IPs.add(device);
-
+                        Conf.AvailableDevices.add(device);
                     }
                 }
             }catch (Exception e){
@@ -72,10 +70,10 @@ public class WorkFlowCollaborate {
         totalBattery = 0;
         totalCPU =0 ;
         totalRAM = 0;
-        Conf.IPs.clear();
+        Conf.AvailableDevices.clear();
     }
     private void WeightNormalize(){
-        for(CollaborateDevice device : Conf.IPs){
+        for(CollaborateDevice device : Conf.AvailableDevices){
             float normalizeCPU = (float) device.CPU / (float) totalCPU;
             float normalizeBattery = (float) device.Battery / (float) totalBattery;
             float normalizeRAM = (float) device.RAM / (float) totalRAM;
