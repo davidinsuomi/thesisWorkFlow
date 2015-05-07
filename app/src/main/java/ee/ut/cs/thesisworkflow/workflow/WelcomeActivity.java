@@ -15,6 +15,8 @@ public class WelcomeActivity extends Activity{
 
     Button bpleRunningButton;
     Button bpleServerButton;
+
+    Button testThreadsButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +44,19 @@ public class WelcomeActivity extends Activity{
             }
         });
 
+        testThreadsButton = new Button(this);
+        testThreadsButton.setText("test threads");
+        testThreadsButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(WelcomeActivity.this, ThreadsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         linearLayout.addView(bpleRunningButton);
         linearLayout.addView(bpleServerButton);
+        linearLayout.addView(testThreadsButton);
 
         setContentView(linearLayout, layoutParams);
 

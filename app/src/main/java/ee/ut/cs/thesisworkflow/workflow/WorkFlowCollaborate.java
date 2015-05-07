@@ -86,6 +86,18 @@ public class WorkFlowCollaborate {
         }
     }
 
+    public void PartitionEqual(){
+        for(CollaborateDevice device : Conf.AvailableDevices){
+            device.weight = 10;
+        }
+    }
+
+    public void PartitionNotEqual(){
+        Conf.AvailableDevices.get(0).weight = 12;
+        Conf.AvailableDevices.get(1).weight =13;
+        Conf.AvailableDevices.get(2).weight =5;
+    }
+
     private String fetchHttp(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
         HttpResponse response = httpclient.execute(new HttpGet(uri));

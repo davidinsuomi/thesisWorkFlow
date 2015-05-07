@@ -10,8 +10,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -24,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import ee.ut.cs.thesisworkflow.object.WorkFlowProcess;
@@ -55,6 +61,14 @@ public class MainActivity extends Activity {
     private BluetoothAdapter mBluetoothAdapter = null;
     private WorkFlowExecution workFlowExecution = new WorkFlowExecution();
     private AssetManager assetManager;
+    private int count = 0;
+    ListView listview;
+    ArrayList<String> debugLists = new ArrayList<String>();
+    ArrayAdapter<String> listAdapter;
+    static InputStream inputStream = null;
+
+    long startTimeBpel;
+    long endTimeBpel;
 
     static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
@@ -64,30 +78,88 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        TestWorkFlowExecution();
+        listview = new ListView(this);
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, debugLists);
+        listview.setAdapter(listAdapter);
 //        TestWorkFlowGenerate();
 
+        assetManager = getResources().getAssets();
+        setContentView(listview);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int delay = 1000; // delay for 1 sec.
+        int period = 15000; // repeat every 40 sec.
+        Timer timer = new Timer();
+        startTimeBpel = System.currentTimeMillis();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                new bpelExecutionAsyncTask().execute();
+            }
+        }, delay, period);
     }
 
     private void TestWorkFlowExecution() {
-        assetManager = getResources().getAssets();
-        InputStream inputStream = null;
-
         try {
-            inputStream = assetManager.open("bpel06.xml");
-            if (inputStream != null) {
-                workFlowProcess = workFlowXmlParser.parse(inputStream);
-            }
+            inputStream = assetManager.open("bpel11.xml");
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
+        if (workFlowProcess != null) {
+            workFlowProcess = null;
+            workFlowProcess = new WorkFlowProcess();
+        }
+        if (workFlowExecution != null) {
+            workFlowExecution = null;
+            workFlowExecution = new WorkFlowExecution();
+        }
+
+        if (workFlowXmlParser != null) {
+            workFlowXmlParser = null;
+            workFlowXmlParser = new WorkFlowXmlParser();
+        }
+        try {
+            workFlowProcess = workFlowXmlParser.parse(inputStream);
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         workFlowExecution.BeginWorkFlow(workFlowProcess);
+
+    }
+
+    private int readBatteryStatus() {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = MyApplication.getAppContext().getApplicationContext().registerReceiver(null, ifilter);
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        Object mPowerProfile_ = null;
+
+        final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
+
+        try {
+            mPowerProfile_ = Class.forName(POWER_PROFILE_CLASS)
+                    .getConstructor(Context.class).newInstance(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        double batteryCapacity = 0;
+        try {
+            batteryCapacity = (Double) Class
+                    .forName(POWER_PROFILE_CLASS)
+                    .getMethod("getAveragePower", java.lang.String.class)
+                    .invoke(mPowerProfile_, "battery.capacity");
+            Log.e(TAG, batteryCapacity + " mah");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        double result = (level / (float) scale) * batteryCapacity;
+        return (int) result;
 
     }
 
@@ -245,9 +317,6 @@ public class MainActivity extends Activity {
         protected Void doInBackground(Void... params) {
             // TODO Auto-generated method stub
             try {
-                //TODO need to from the internal storage of the zip file
-//                InputStream offloadingStream = assetManager.open("HelloWorld2.zip" );
-//                FileInputStream fin = openFileInput("testing.zip");
                 String zipFileLocation = getApplicationContext().getFilesDir() + "/" + "testing.zip";
                 File zipFilePath = new File(zipFileLocation);
                 InputStream offloadingStream = null;
@@ -268,6 +337,28 @@ public class MainActivity extends Activity {
         }
 
 
+    }
+
+
+    private class bpelExecutionAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            TestWorkFlowExecution();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            endTimeBpel = System.currentTimeMillis();
+            long elapsed = (endTimeBpel - startTimeBpel) / (1000 * 60);
+            String debugOutput = "running " + count + " times\n" + "battery now:" + readBatteryStatus() + " mah\n" + "elapsed " +  (int) elapsed + " min";
+            count++;
+            debugLists.add(debugOutput);
+            listAdapter.notifyDataSetChanged();
+            listview.invalidate();
+            super.onPostExecute(aVoid);
+        }
     }
 
     private String bpelWsdl = "<message name=\"getTermRequest\">\n" +

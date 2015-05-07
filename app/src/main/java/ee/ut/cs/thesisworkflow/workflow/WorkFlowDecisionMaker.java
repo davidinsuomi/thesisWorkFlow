@@ -56,7 +56,7 @@ public class WorkFlowDecisionMaker {
 
     public void MakeDecision(String decisionPoint) {
         //TODO just for testing need to delete it afterwards
-        workFlowCollaborate.GetCollaborateDevicesStatus();
+        workFlowCollaborate.PartitionEqual();
         if (IsOffloadingParalleTask(decisionPoint)) {
             if (IsOffloading()) {
                 int totalWeight = 0;
@@ -94,13 +94,6 @@ public class WorkFlowDecisionMaker {
 
         } else {
             //TODO IS SEQUENCE TASK NOT OFF LOADING, THE COMMENT CODE IS HOW TO OFFLOADING SEQUENCE TASK
-//            StringWriter stringWriterSequence = null;
-//            try {
-//                stringWriterSequence = generate.OffLoadingSequenceTask(decisionPoint, "ending");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            generate.ModifyBpelMap(decisionPoint, "ending", stringWriterSequence);
         }
     }
 

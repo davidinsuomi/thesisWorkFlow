@@ -18,6 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
 
 import coap.GETRequest;
 import coap.MediaTypeRegistry;
@@ -46,6 +48,7 @@ public class WorkFlowExecution {
     private ArrayList<WorkFlowVariable> variables;
     private ArrayList<PartnerLink> partnerLinks;
     private WorkFlowDecisionMaker decisionMaker;
+    private Object threadLock = new Object();
 
     public void BeginWorkFlow(WorkFlowProcess workflowProcess) {
         graphMap = workflowProcess.graphMap;
@@ -62,6 +65,7 @@ public class WorkFlowExecution {
             decisionMaker.MakeDecision(graphKey);
             ArrayList<String> graphValues = graphMap.get(graphKey);
             for (int i = 0; i < graphValues.size(); i++) {
+                Log.e("SIZE","PROCESS workflow size" + graphValues.size());
                 ExecutionTask task = new ExecutionTask(graphValues.get(i));
                 task.start();
             }
@@ -121,11 +125,15 @@ public class WorkFlowExecution {
         } else if (URLPATH.startsWith("$")) {
             fullUri = GetUriPathFromList(workFlowInvoke.name, URLPATH.substring(1));
             Log.d(TAG, "$coap uri " + fullUri);
-            if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
-                fullUri = fullUri + workFlowInvoke.operation;
-                byteFromServer = FetchCoap(fullUri);
-            } else {
-                byteFromServer = FetchCoap(fullUri);
+            if(fullUri.startsWith("http")){
+                byteFromServer = fetchHttp(fullUri);
+            }else if (fullUri.startsWith("coap")) {
+                if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
+                    fullUri = fullUri + workFlowInvoke.operation;
+                    byteFromServer = FetchCoap(fullUri);
+                } else {
+                    byteFromServer = FetchCoap(fullUri);
+                }
             }
         } else {
             fullUri = URLPATH + "/" + workFlowInvoke.operation;
@@ -175,6 +183,7 @@ public class WorkFlowExecution {
     }
 
     private byte[] CoapConnection(Request request, String payload, String uri) {
+
         byte[] byteFromServer = null;
         try {
             request.setURI(new URI(uri));
@@ -193,9 +202,6 @@ public class WorkFlowExecution {
             Log.e(TAG, "Failed to execute request: " + e.getMessage());
             return null;
         }
-
-
-        // receive response
 
         Log.e(TAG, "Receiving response...");
         Response response = null;
@@ -218,7 +224,6 @@ public class WorkFlowExecution {
         // output response
 
         if (response != null) {
-
             response.log();
             byteFromServer = response.getPayload();
             Log.e(TAG, "Round Trip Time (ms): " + response.getRTT());
@@ -243,8 +248,7 @@ public class WorkFlowExecution {
         } else {
             // no response received
             // calculate time elapsed
-            long elapsed = System.currentTimeMillis() - request.getTimestamp();
-
+            long elapsed = System.nanoTime() - request.getTimestamp();
             Log.e(TAG, "Request timed out (ms): " + elapsed);
         }
 
@@ -254,12 +258,16 @@ public class WorkFlowExecution {
 
     private byte[] fetchHttp(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
+        long startTime = System.nanoTime();
         HttpResponse response = httpclient.execute(new HttpGet(uri));
         StatusLine statusLine = response.getStatusLine();
         if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             response.getEntity().writeTo(out);
             out.close();
+            long elapsedTime = System.nanoTime() - startTime;
+            Log.i("HTTPDEBUG", "Round Trip Time (ms): " + elapsedTime/1000000);
+            Log.i("HTTPSIZE", "" + out.toString().length());
             return out.toByteArray();
             // ..more logic
         } else {
