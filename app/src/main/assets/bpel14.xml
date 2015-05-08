@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<process>
+    <partnerLinks>
+        <partnerLink partnerLinkType="tns:GetData" name="matchingCoap">coap://localhost:5684/temperatureMatching</partnerLink>
+        <partnerLink partnerLinkType="tns:GetData" name="getWellKnowInCoap">coap://localhost/</partnerLink>
+    </partnerLinks>
+    <variables>
+        <variable messageType="tns:String" name="coapServiceResponse7" />
+        <variable messageType="tns:String" name="coapServiceResponse4" />
+        <variable messageType="tns:String" name="mathcingResult" />
+        <variable messageType="tns:String" name="postData3" />
+        <variable messageType="tns:String" name="coapServiceResponse1" />
+        <variable messageType="tns:String" name="postData6" />
+        <variable messageType="tns:String" name="coapServiceResponse2" />
+        <variable messageType="tns:String" name="coapServiceResponse6" />
+        <variable messageType="tns:String" name="postData8" />
+        <variable messageType="tns:String" name="postData1" />
+        <variable messageType="tns:String" name="postData" />
+        <variable messageType="tns:String" name="postData9" />
+        <variable messageType="tns:String" name="variable2">testing
+        </variable>
+        <variable messageType="tns:String" name="postData2" />
+        <variable messageType="tns:String" name="coapServiceResponse" />
+        <variable messageType="tns:String" name="coapServiceResponse9" />
+        <variable messageType="tns:String" name="coapServiceResponse5" />
+        <variable messageType="tns:String" name="dummyAssign1">dummy value</variable>
+        <variable messageType="tns:String" name="postData5" />
+        <variable messageType="tns:String" name="coapServiceResponse3" />
+        <variable messageType="tns:String" name="dummyAssign2">dummy value</variable>
+        <variable messageType="tns:String" name="coapServiceResponse8" />
+        <variable messageType="tns:String" name="variable1">testing
+        </variable>
+        <variable messageType="tns:String" name="postData7" />
+        <variable messageType="tns:String" name="postData4" />
+    </variables>
+    <sequence>
+        <assign name="entryPoint">
+            <copy>
+                <from variable="dummyAssign1" />
+                <to variable="dummyAssign2" />
+            </copy>
+        </assign>
+        <flow>
+            <sequence>
+                <invoke name="CoapServiceDiscovery5" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse5" />
+                <assign name="assign5">
+                    <copy>
+                        <from variable="coapServiceResponse5" />
+                        <to variable="postData5" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap5" partnerLink="matchingCoap" operation="POST" inputVariable="postData5" outputVariable="mathcingResult5" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery6" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse6" />
+                <assign name="assign6">
+                    <copy>
+                        <from variable="coapServiceResponse6" />
+                        <to variable="postData6" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap6" partnerLink="matchingCoap" operation="POST" inputVariable="postData6" outputVariable="mathcingResult6" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery7" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse7" />
+                <assign name="assign7">
+                    <copy>
+                        <from variable="coapServiceResponse7" />
+                        <to variable="postData7" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap7" partnerLink="matchingCoap" operation="POST" inputVariable="postData7" outputVariable="mathcingResult7" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery8" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse8" />
+                <assign name="assign8">
+                    <copy>
+                        <from variable="coapServiceResponse8" />
+                        <to variable="postData8" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap8" partnerLink="matchingCoap" operation="POST" inputVariable="postData8" outputVariable="mathcingResult8" />
+            </sequence>
+            <sequence>
+                <invoke name="CoapServiceDiscovery9" partnerLink="getWellKnowInCoap" operation=".well-known/core" outputVariable="coapServiceResponse9" />
+                <assign name="assign9">
+                    <copy>
+                        <from variable="coapServiceResponse9" />
+                        <to variable="postData9" />
+                    </copy>
+                </assign>
+                <invoke name="invokeMatchingCoap9" partnerLink="matchingCoap" operation="POST" inputVariable="postData9" outputVariable="mathcingResult9" />
+            </sequence>
+        </flow>
+        <assign name="endPoint">
+            <copy>
+                <from variable="dummyAssign1" />
+                <to variable="dummyAssign2" />
+            </copy>
+        </assign>
+    </sequence>
+</process>

@@ -108,11 +108,13 @@ public class WorkFlowDecisionMaker {
         fis.setVariable("RAM", getMemoryUsage());
         fis.setVariable("BANDWIDTH", getBandwidthUsage());
         fis.evaluate();
-        Log.e(TAG, "" + fis.getVariable("decision").getLatestDefuzzifiedValue());
-        defuzzifiedValue = fis.getVariable("decision").getLatestDefuzzifiedValue();
+        Log.e(TAG, "" + fis.getVariable("DECISION").getLatestDefuzzifiedValue());
+        defuzzifiedValue = fis.getVariable("DECISION").getLatestDefuzzifiedValue();
         if (defuzzifiedValue > 10) {
+            Log.e(TAG,"Not OFFLOADING THE TASK");
             return false;
         } else {
+            Log.e(TAG,"OFFLOADING THE TASK");
             return true;
         }
     }

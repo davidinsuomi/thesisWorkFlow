@@ -297,7 +297,7 @@ public class WorkFlowGenerate {
             variables.add(offloadingOutput);
 
 
-            PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink" + i ,"tns:PostData","",IPs.get(0).IP +":8080");
+            PartnerLink offLoadingPartnerLink = new PartnerLink("offLoadingPartnerLink" + i ,"tns:PostData","",IPs.get(i).IP +":8080");
             partnerLinks.add(offLoadingPartnerLink);
 
 
@@ -312,6 +312,11 @@ public class WorkFlowGenerate {
 
         graphMap.put(startTask,invokes);
         graphMapBackword.put(endTask,invokes);
+        for(String invokeName : invokes){
+            ArrayList<String> previousActivity = new ArrayList<>();
+            previousActivity.add(startTask);
+            graphMapBackword.put(invokeName,previousActivity);
+        }
     }
 
     private void AddDummyInovekeVariableForParallelTask() {
@@ -353,12 +358,27 @@ public class WorkFlowGenerate {
             TaskToBeOffloadingSequence(startActivityInsideFlow, endFlowActivity);
         }
         xmlSerializer.endTag("", "flow");
+        CreateEndingBpelActivity();
         xmlSerializer.endTag("", "sequence");
     }
 
     private void CreateStartingBpelActivity() throws IOException {
         xmlSerializer.startTag("", "assign");
         xmlSerializer.attribute("", "name", "entryPoint");
+        xmlSerializer.startTag("", "copy");
+        xmlSerializer.startTag("", "from");
+        xmlSerializer.attribute("", "variable", "dummyAssign1");
+        xmlSerializer.endTag("", "from");
+        xmlSerializer.startTag("", "to");
+        xmlSerializer.attribute("", "variable", "dummyAssign2");
+        xmlSerializer.endTag("", "to");
+        xmlSerializer.endTag("", "copy");
+        xmlSerializer.endTag("", "assign");
+    }
+
+    private void CreateEndingBpelActivity() throws IOException {
+        xmlSerializer.startTag("", "assign");
+        xmlSerializer.attribute("", "name", "endPoint");
         xmlSerializer.startTag("", "copy");
         xmlSerializer.startTag("", "from");
         xmlSerializer.attribute("", "variable", "dummyAssign1");

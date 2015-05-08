@@ -88,14 +88,13 @@ public class WorkFlowCollaborate {
 
     public void PartitionEqual(){
         for(CollaborateDevice device : Conf.AvailableDevices){
-            device.weight = 10;
+            device.weight = 50;
         }
     }
 
     public void PartitionNotEqual(){
-        Conf.AvailableDevices.get(0).weight = 12;
-        Conf.AvailableDevices.get(1).weight =13;
-        Conf.AvailableDevices.get(2).weight =5;
+        Conf.AvailableDevices.get(0).weight =90;
+        Conf.AvailableDevices.get(1).weight = 10;
     }
 
     private String fetchHttp(String uri) throws IOException {

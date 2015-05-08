@@ -33,6 +33,12 @@
             messageType="tns:String"/>
         <variable name="mathcingResult"
             messageType="tns:String"/>
+        <variable name="variable1"
+            messageType="tns:String">testing
+        </variable>
+        <variable name="variable2"
+            messageType="tns:String">testing
+        </variable>
     </variables>
 
     <!-- ================================================================= -->
@@ -69,8 +75,8 @@
         </forEach>
         <assign name="endPoint">
             <copy>
-                <from variable="coapServiceResponse" />
-                <to variable="postData" />
+                <from variable="variable1" />
+                <to variable="variable2" />
             </copy>
         </assign>
     </sequence>

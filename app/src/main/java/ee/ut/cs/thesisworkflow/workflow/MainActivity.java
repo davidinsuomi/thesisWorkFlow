@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 
     long startTimeBpel;
     long endTimeBpel;
-
+    public static long testCaseStartTime;
     static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
@@ -90,20 +90,22 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        int delay = 1000; // delay for 1 sec.
-        int period = 15000; // repeat every 40 sec.
-        Timer timer = new Timer();
-        startTimeBpel = System.currentTimeMillis();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                new bpelExecutionAsyncTask().execute();
-            }
-        }, delay, period);
+//        int delay = 1000; // delay for 1 sec.
+//        int period = 15000; // repeat every 40 sec.
+//        Timer timer = new Timer();
+//        startTimeBpel = System.currentTimeMillis();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() {
+//                new bpelExecutionAsyncTask().execute();
+//            }
+//        }, delay, period);
+        testCaseStartTime = System.currentTimeMillis();
+        TestWorkFlowExecution();
     }
 
     private void TestWorkFlowExecution() {
         try {
-            inputStream = assetManager.open("bpel11.xml");
+            inputStream = assetManager.open("bpel14.xml");
         } catch (IOException e) {
             e.printStackTrace();
         }

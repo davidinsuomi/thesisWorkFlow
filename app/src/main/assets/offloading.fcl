@@ -16,7 +16,7 @@ END_VAR
 // Fuzzify input variable 'BANDWIDTH': { 'poor','fast', 'excellent' }
 FUZZIFY BANDWIDTH
         TERM poor := (0,1) (8,0);
-        TERM fast := (6,0) (10,1) (14,0)
+        TERM fast := (6,0) (10,1) (14,0);
         TERM excellent := (12,0) (20,1);
 END_FUZZIFY
 

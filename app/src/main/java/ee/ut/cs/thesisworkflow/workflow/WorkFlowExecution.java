@@ -2,6 +2,7 @@ package ee.ut.cs.thesisworkflow.workflow;
 
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -11,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,7 +64,8 @@ public class WorkFlowExecution {
 
     private void ProcessWorkFlow(String graphKey) {
         if (!IsLastExecutionInGraph(graphKey) && IsPreviousTaskFinish(graphKey)) {
-            decisionMaker.MakeDecision(graphKey);
+//            decisionMaker.MakeDecision(graphKey);
+
             ArrayList<String> graphValues = graphMap.get(graphKey);
             for (int i = 0; i < graphValues.size(); i++) {
                 Log.e("SIZE","PROCESS workflow size" + graphValues.size());
@@ -70,6 +73,12 @@ public class WorkFlowExecution {
                 task.start();
             }
         }
+        if(graphKey.equals("endPoint")) {
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - MainActivity.testCaseStartTime;
+            Log.e("DURATION", "" + duration + "ms");
+        }
+
     }
 
     private void PostToServer(WorkFlowInvoke workFlowInvoke) throws ClientProtocolException, IOException {
@@ -89,7 +98,11 @@ public class WorkFlowExecution {
         }
 
         if (URLPATH.startsWith("coap")) {
-            PostCoap(URLPATH, inputVariable.GetData());
+            if(inputVariable.GetData() != null) {
+                PostCoap(URLPATH, inputVariable.GetData());
+            }else{
+                Log.e(TAG,"POST COAP DATA IS NULL");
+            }
         } else {
 
             String FullURL = URLPATH;
@@ -102,9 +115,10 @@ public class WorkFlowExecution {
                 Log.d(TAG, "POST TO server not null");
                 httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
                 HttpResponse response = httpclient.execute(httpPost);
+                HttpEntity entity = response.getEntity();
+                String responseString = EntityUtils.toString(entity, "UTF-8");
+                Log.e(TAG,"OFFLOADING RESPONSE " + responseString);
             }
-//        byte[] content = EntityUtils.toByteArray(response.getEntity());
-//        outputVariable.value = content;
         }
     }
 
@@ -117,28 +131,49 @@ public class WorkFlowExecution {
                 URLPATH = partnerLink.URL;
             }
         }
-        // assign loop count based on the invoke name
-        if (URLPATH.startsWith("coap")) {
+
+        if(URLPATH.startsWith("$")){
+            URLPATH =GetUriPathFromList(workFlowInvoke.name, URLPATH.substring(1));
+        }
+        if(URLPATH.startsWith("coap")){
             fullUri = URLPATH;
-            Log.d(TAG, "coap uri " + fullUri);
-            byteFromServer = FetchCoap(fullUri);
-        } else if (URLPATH.startsWith("$")) {
-            fullUri = GetUriPathFromList(workFlowInvoke.name, URLPATH.substring(1));
-            Log.d(TAG, "$coap uri " + fullUri);
-            if(fullUri.startsWith("http")){
-                byteFromServer = fetchHttp(fullUri);
-            }else if (fullUri.startsWith("coap")) {
-                if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
-                    fullUri = fullUri + workFlowInvoke.operation;
-                    byteFromServer = FetchCoap(fullUri);
-                } else {
-                    byteFromServer = FetchCoap(fullUri);
-                }
+            if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
+                fullUri = fullUri + workFlowInvoke.operation;
+                byteFromServer = FetchCoap(fullUri);
+            } else {
+                byteFromServer = FetchCoap(fullUri);
             }
-        } else {
+        }else if (fullUri.startsWith("http")){
             fullUri = URLPATH + "/" + workFlowInvoke.operation;
             byteFromServer = fetchHttp(fullUri);
         }
+
+//        previous logic, too confusing
+//        if (URLPATH.startsWith("coap")) {
+//            fullUri = URLPATH;
+//            if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
+//                fullUri = fullUri + workFlowInvoke.operation;
+//                byteFromServer = FetchCoap(fullUri);
+//            } else {
+//                byteFromServer = FetchCoap(fullUri);
+//            }
+//        } else if (URLPATH.startsWith("$")) {
+//            fullUri = GetUriPathFromList(workFlowInvoke.name, URLPATH.substring(1));
+//            Log.d(TAG, "$coap uri " + fullUri);
+//            if(fullUri.startsWith("http")){
+//                byteFromServer = fetchHttp(fullUri);
+//            }else if (fullUri.startsWith("coap")) {
+//                if (workFlowInvoke.operation != null && workFlowInvoke.operation.contains("well-known")) {
+//                    fullUri = fullUri + workFlowInvoke.operation;
+//                    byteFromServer = FetchCoap(fullUri);
+//                } else {
+//                    byteFromServer = FetchCoap(fullUri);
+//                }
+//            }
+//        } else {
+//            fullUri = URLPATH + "/" + workFlowInvoke.operation;
+//            byteFromServer = fetchHttp(fullUri);
+//        }
 
         for (WorkFlowVariable variable : variables) {
             if (variable.name.equals(workFlowInvoke.outputVariable)) {
@@ -203,7 +238,6 @@ public class WorkFlowExecution {
             return null;
         }
 
-        Log.e(TAG, "Receiving response...");
         Response response = null;
         try {
             response = request.receiveResponse();
@@ -226,7 +260,7 @@ public class WorkFlowExecution {
         if (response != null) {
             response.log();
             byteFromServer = response.getPayload();
-            Log.e(TAG, "Round Trip Time (ms): " + response.getRTT());
+            Log.e(TAG, "Coap Round Trip Time (ms): " + response.getRTT());
 
             // check of response contains resources
             if (response.hasFormat(MediaTypeRegistry.LINK_FORMAT)) {
@@ -266,7 +300,7 @@ public class WorkFlowExecution {
             response.getEntity().writeTo(out);
             out.close();
             long elapsedTime = System.nanoTime() - startTime;
-            Log.i("HTTPDEBUG", "Round Trip Time (ms): " + elapsedTime/1000000);
+            Log.i("HTTPDEBUG", "HTTP Round Trip Time (ms): " + elapsedTime/1000000);
             Log.i("HTTPSIZE", "" + out.toString().length());
             return out.toByteArray();
             // ..more logic
@@ -356,6 +390,7 @@ public class WorkFlowExecution {
             } else if (activity instanceof WorkFlowAssign) {
                 AssignVariable((WorkFlowAssign) activity);
             }
+            Log.e(TAG,"SETTING FINISH TAG" + activity.name);
             activity.status.compareAndSet(false, true);
             ProcessWorkFlow(activityName);
         }
