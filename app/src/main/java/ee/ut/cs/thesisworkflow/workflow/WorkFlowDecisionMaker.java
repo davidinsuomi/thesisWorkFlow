@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.SystemClock;
 import android.util.Log;
 
 import net.sourceforge.jFuzzyLogic.FIS;
@@ -55,16 +56,20 @@ public class WorkFlowDecisionMaker {
 
 
     public void MakeDecision(String decisionPoint) {
-        //TODO just for testing need to delete it afterwards
-        workFlowCollaborate.PartitionEqual();
         if (IsOffloadingParalleTask(decisionPoint)) {
+            workFlowCollaborate.GetCollaborateDevicesStatus();
+            SystemClock.sleep(1000);
             if (IsOffloading()) {
                 int totalWeight = 0;
                 for (int i = 0; i < Conf.AvailableDevices.size(); i++) {
                     totalWeight += Conf.AvailableDevices.get(i).weight;
                 }
-                Log.e(TAG, "total weight" + totalWeight);
-
+                if(totalWeight == 0){
+                    workFlowCollaborate.PartitionNotEqual();
+                    for (int i = 0; i < Conf.AvailableDevices.size(); i++) {
+                        totalWeight += Conf.AvailableDevices.get(i).weight;
+                    }
+                }
                 int partitionSize = graphMap.get(decisionPoint).size();
                 Log.e(TAG, "partition size" + partitionSize);
                 int position = 0;

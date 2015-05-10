@@ -56,7 +56,7 @@
         </assign>
         <forEach countername='n'>
             <startCounterValue>0</startCounterValue>
-            <finalCounterValue>10</finalCounterValue>
+            <finalCounterValue>20</finalCounterValue>
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"

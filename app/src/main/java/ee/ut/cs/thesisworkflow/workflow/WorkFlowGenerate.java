@@ -279,7 +279,7 @@ public class WorkFlowGenerate {
             TaskToBeOffloadingParallel(startTask, flowEndTask, IPs.get(i));
             xmlSerializer.endTag("", "process");
             FinalizeXmlSerializer();
-            longInfo(writer.toString());
+//            longInfo(writer.toString());
             inputVariables.add(writer.toString());
         }
 

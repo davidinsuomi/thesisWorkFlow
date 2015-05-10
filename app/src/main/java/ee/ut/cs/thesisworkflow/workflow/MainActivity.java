@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
 
     private void TestWorkFlowExecution() {
         try {
-            inputStream = assetManager.open("bpel14.xml");
+            inputStream = assetManager.open("bpel13.xml");
         } catch (IOException e) {
             e.printStackTrace();
         }

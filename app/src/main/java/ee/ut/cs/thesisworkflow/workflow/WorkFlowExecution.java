@@ -64,7 +64,7 @@ public class WorkFlowExecution {
 
     private void ProcessWorkFlow(String graphKey) {
         if (!IsLastExecutionInGraph(graphKey) && IsPreviousTaskFinish(graphKey)) {
-//            decisionMaker.MakeDecision(graphKey);
+            decisionMaker.MakeDecision(graphKey);
 
             ArrayList<String> graphValues = graphMap.get(graphKey);
             for (int i = 0; i < graphValues.size(); i++) {

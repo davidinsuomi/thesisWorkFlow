@@ -1,6 +1,7 @@
 package ee.ut.cs.thesisworkflow.workflow;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import ee.ut.cs.thesisworkflow.Data.CollaborateDevice;
 import ee.ut.cs.thesisworkflow.Data.Conf;
@@ -25,15 +27,15 @@ public class WorkFlowCollaborate {
     int totalBattery;
     int totalRAM;
     int totalBandwidth;
-
+    public static String TAG = "WorkFlowCollaborate";
+    int hightWeight;
     public void GetCollaborateDevicesStatus(){
-        ResetValue();
+//        ResetValue();
         new fetchingStatusService().execute();
     }
     private class fetchingStatusService extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
             try {
                 for(int i = 0 ; i < Conf.CollaborateDevices.size() ; i++){
                     String response = "";
@@ -54,7 +56,8 @@ public class WorkFlowCollaborate {
                         totalBattery += device.Battery;
                         totalCPU += device.CPU;
                         totalBandwidth += device.Bandwidth;
-                        Conf.AvailableDevices.add(device);
+                        Log.e(TAG,"Setting the realtime speic");
+                        Conf.AvailableDevices.set(i,device);
                     }
                 }
             }catch (Exception e){
@@ -76,13 +79,21 @@ public class WorkFlowCollaborate {
         Conf.AvailableDevices.clear();
     }
     private void WeightNormalize(){
+        float normalizeCPU = 0;
         for(CollaborateDevice device : Conf.AvailableDevices){
-            float normalizeCPU = (float) device.CPU / (float) totalCPU;
+            if(totalCPU !=0) {
+                 normalizeCPU = (float) device.CPU / (float) totalCPU;
+            }
             float normalizeBattery = (float) device.Battery / (float) totalBattery;
             float normalizeRAM = (float) device.RAM / (float) totalRAM;
             float normalizeBandwidth = (float) device.Bandwidth / (float) totalBandwidth;
-            float weight = normalizeCPU + normalizeBattery + normalizeRAM + normalizeBandwidth;
-            device.weight = (int) (weight * 100);
+            float weight = normalizeCPU + 3 * normalizeBattery + 55 * normalizeRAM + normalizeBandwidth;
+            Log.e(TAG, "DEVICE WEIGHT IS " + weight);
+            if(weight == 0){
+                device.weight = randInt(3,6) * 10;
+            }else {
+                device.weight = (int) (weight * 100);
+            }
         }
     }
 
@@ -93,9 +104,12 @@ public class WorkFlowCollaborate {
     }
 
     public void PartitionNotEqual(){
-        Conf.AvailableDevices.get(0).weight =90;
-        Conf.AvailableDevices.get(1).weight = 10;
+        hightWeight = randInt(6,8) * 10;
+        Log.e("TAG","SET RANDOM weight " + hightWeight);
+        Conf.AvailableDevices.get(0).weight =hightWeight;
+        Conf.AvailableDevices.get(1).weight = 100 - hightWeight;
     }
+
 
     private String fetchHttp(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -111,5 +125,18 @@ public class WorkFlowCollaborate {
             response.getEntity().getContent().close();
             throw new IOException(statusLine.getReasonPhrase());
         }
+    }
+
+    public static int randInt(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 }
