@@ -1,5 +1,6 @@
 package ee.ut.cs.thesisworkflow.workflow;
 
+import android.os.SystemClock;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -65,7 +66,7 @@ public class WorkFlowExecution {
     private void ProcessWorkFlow(String graphKey) {
         if (!IsLastExecutionInGraph(graphKey) && IsPreviousTaskFinish(graphKey)) {
             decisionMaker.MakeDecision(graphKey);
-
+            Log.e(TAG,"execute task" + graphKey);
             ArrayList<String> graphValues = graphMap.get(graphKey);
             for (int i = 0; i < graphValues.size(); i++) {
                 Log.e("SIZE","PROCESS workflow size" + graphValues.size());
@@ -107,19 +108,29 @@ public class WorkFlowExecution {
 
             String FullURL = URLPATH;
             Log.d(TAG, "POST TO server " + FullURL);
+            BpelHttpPost(FullURL,inputVariable);
 
-            // Create a new HttpClient and Post Header
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(FullURL);
-            if (inputVariable.GetValue() != null) {
-                Log.d(TAG, "POST TO server not null");
-                httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
-                HttpResponse response = httpclient.execute(httpPost);
-                HttpEntity entity = response.getEntity();
-                String responseString = EntityUtils.toString(entity, "UTF-8");
-                Log.e(TAG,"OFFLOADING RESPONSE " + responseString);
-            }
         }
+    }
+
+
+    private String BpelHttpPost(String url, WorkFlowVariable inputVariable) throws IOException {
+        // Create a new HttpClient and Post Header
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(url);
+        if (inputVariable.GetValue() != null) {
+            Log.d(TAG, "inputvariable" + inputVariable.name + "POST TO server last string:" + inputVariable.GetData().substring(inputVariable.GetData().length() -10 ));
+            httpPost.setEntity(new ByteArrayEntity(inputVariable.GetValue()));
+            HttpResponse response = httpclient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            Log.e(TAG,"OFFLOADING RESPONSE " + responseString);
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - MainActivity.testCaseStartTime;
+            Log.e("DURATION", "" + duration + "ms");
+            return responseString;
+        }
+        return null;
     }
 
     private void FetchFromServer(WorkFlowInvoke workFlowInvoke) throws IOException {

@@ -14,7 +14,10 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -84,19 +87,41 @@ public class MainActivity extends Activity {
 //        TestWorkFlowGenerate();
 
         assetManager = getResources().getAssets();
-        setContentView(listview);
+
+
+        LinearLayout linLayout = new LinearLayout(this);
+        // specifying vertical orientation
+        linLayout.setOrientation(LinearLayout.VERTICAL);
+        // creating LayoutParams
+        LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        // set LinearLayout as a root element of the screen
+        setContentView(linLayout, linLayoutParam);
+
+        Button button = new Button(this);
+        button.setText("rerun");
+        linLayout.addView(button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testCaseStartTime = System.currentTimeMillis();
+                TestWorkFlowExecution();
+            }
+        });
+
+        setContentView(linLayout);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 //        int delay = 1000; // delay for 1 sec.
-//        int period = 15000; // repeat every 40 sec.
+//        int period = 20000; // repeat every 30 sec.
 //        Timer timer = new Timer();
 //        startTimeBpel = System.currentTimeMillis();
 //        timer.scheduleAtFixedRate(new TimerTask() {
 //            public void run() {
-//                new bpelExecutionAsyncTask().execute();
+//                testCaseStartTime = System.currentTimeMillis();
+//                TestWorkFlowExecution();
 //            }
 //        }, delay, period);
         testCaseStartTime = System.currentTimeMillis();

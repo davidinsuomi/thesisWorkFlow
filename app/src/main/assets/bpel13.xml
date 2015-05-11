@@ -11,7 +11,7 @@
         <partnerLink name="BLEScanning"
             partnerLinkType="tns:GetData">coap://localhost/coapIP</partnerLink>
         <partnerLink name="getWellKnowInCoap"
-            partnerLinkType="tns:GetData">coap://localhost®/</partnerLink>
+            partnerLinkType="tns:GetData">coap://localhost/</partnerLink>
         <partnerLink name="matchingCoap"
             partnerLinkType="tns:GetData">coap://localhost:5684/temperatureMatching</partnerLink>
 
@@ -56,7 +56,7 @@
         </assign>
         <forEach countername='n'>
             <startCounterValue>0</startCounterValue>
-            <finalCounterValue>20</finalCounterValue>
+            <finalCounterValue>30</finalCounterValue>
             <sequence>
                 <invoke name="CoapServiceDiscovery"
                     partnerLink="getWellKnowInCoap"
