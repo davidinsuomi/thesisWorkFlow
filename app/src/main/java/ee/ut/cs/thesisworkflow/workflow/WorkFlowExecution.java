@@ -188,9 +188,11 @@ public class WorkFlowExecution {
 
         for (WorkFlowVariable variable : variables) {
             if (variable.name.equals(workFlowInvoke.outputVariable)) {
-                variable.SetValue(byteFromServer);
-                String log = new String(byteFromServer, "UTF-8");
-                Log.d(TAG, "get TO server not null" + log);
+                if(byteFromServer != null) {
+                    variable.SetValue(byteFromServer);
+                    String log = new String(byteFromServer, "UTF-8");
+                    Log.d(TAG, "get TO server not null" + log);
+                }
             }
         }
     }
@@ -334,8 +336,9 @@ public class WorkFlowExecution {
                 copyFromVariable = variable;
             }
         }
-
-        copyToVariable.SetValue(copyFromVariable.GetValue());
+        if(copyFromVariable.GetValue() != null) {
+            copyToVariable.SetValue(copyFromVariable.GetValue());
+        }
     }
 
     private boolean IsLastExecutionInGraph(String graphKey) {

@@ -106,21 +106,21 @@ public class WorkFlowCollaborate {
     public void PartitionNotEqual(){
         hightWeight = randInt(6,8) * 10;
         Log.e("TAG","SET RANDOM weight " + hightWeight);
-        if(Conf.AvailableDevices.size() >0){
-            int size = Conf.AvailableDevices.size();
-            for(int i=0; i < size ; i ++){
-                Conf.AvailableDevices.get(i).weight = randInt(6,8) * 10;
-            }
-        }
-//        Conf.AvailableDevices.get(0).weight =hightWeight;
-//        Conf.AvailableDevices.get(1).weight = 100 - hightWeight;
-//        hightWeight = randInt(6,8) * 10;
-//        Conf.AvailableDevices.get(2).weight = hightWeight;
-//
-//
-//        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(0).weight);
-//        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(1).weight);
-//        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(2).weight);
+//        if(Conf.AvailableDevices.size() >0){
+//            int size = Conf.AvailableDevices.size();
+//            for(int i=0; i < size ; i ++){
+//                Conf.AvailableDevices.get(i).weight = randInt(6,8) * 10;
+//            }
+//        }
+        Conf.AvailableDevices.get(0).weight =hightWeight;
+        Conf.AvailableDevices.get(1).weight = 100 - hightWeight;
+        hightWeight = randInt(6,8) * 10;
+        Conf.AvailableDevices.get(2).weight = hightWeight;
+
+
+        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(0).weight);
+        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(1).weight);
+        Log.e(TAG, "DEVICE WEIGHT IS " + Conf.AvailableDevices.get(2).weight);
     }
 
 

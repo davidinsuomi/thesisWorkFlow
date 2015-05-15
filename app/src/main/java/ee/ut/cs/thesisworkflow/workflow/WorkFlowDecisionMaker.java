@@ -57,13 +57,13 @@ public class WorkFlowDecisionMaker {
 
     public void MakeDecision(String decisionPoint) {
         if (IsOffloadingParalleTask(decisionPoint)) {
-            workFlowCollaborate.GetCollaborateDevicesStatus();
-            SystemClock.sleep(2000);
+//            workFlowCollaborate.GetCollaborateDevicesStatus();
+//            SystemClock.sleep(4000);
 
             Log.e(TAG,"Make decision");
 //            if (IsOffloading()) {
             //TODO JUST FOR TESTING ALWAYS OFFLOADING
-            if(true){
+            if(false){
                 int totalWeight = 0;
                 for (int i = 0; i < Conf.AvailableDevices.size(); i++) {
                     totalWeight += Conf.AvailableDevices.get(i).weight;

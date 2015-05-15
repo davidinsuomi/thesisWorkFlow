@@ -9,7 +9,9 @@ import java.util.List;
  */
 public class Conf {
     public static List<CollaborateDevice> AvailableDevices = new ArrayList<CollaborateDevice>(Arrays.asList(new CollaborateDevice[]{
-
+            new CollaborateDevice("http://192.168.0.102"),
+            new CollaborateDevice("http://192.168.0.100"),
+            new CollaborateDevice("http://192.168.0.106")
     }));
 
     public static List<String> CollaborateDevices = Arrays.asList(

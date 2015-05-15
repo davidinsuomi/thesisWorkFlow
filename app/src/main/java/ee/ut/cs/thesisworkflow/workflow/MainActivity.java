@@ -108,24 +108,26 @@ public class MainActivity extends Activity {
             }
         });
 
-        setContentView(linLayout);
+        int delay = 1000; // delay for 1 sec.
+        int period = 20000; // repeat every 30 sec.
+        Timer timer = new Timer();
+        startTimeBpel = System.currentTimeMillis();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                testCaseStartTime = System.currentTimeMillis();
+                new bpelExecutionAsyncTask().execute();
+            }
+        }, delay, period);
+
+
+        setContentView(listview);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        int delay = 1000; // delay for 1 sec.
-//        int period = 20000; // repeat every 30 sec.
-//        Timer timer = new Timer();
-//        startTimeBpel = System.currentTimeMillis();
-//        timer.scheduleAtFixedRate(new TimerTask() {
-//            public void run() {
-//                testCaseStartTime = System.currentTimeMillis();
-//                TestWorkFlowExecution();
-//            }
-//        }, delay, period);
-        testCaseStartTime = System.currentTimeMillis();
-        TestWorkFlowExecution();
+//        testCaseStartTime = System.currentTimeMillis();
+//        TestWorkFlowExecution();
     }
 
     private void TestWorkFlowExecution() {
